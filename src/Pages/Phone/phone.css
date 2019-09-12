@@ -1,0 +1,52 @@
+.score {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    border: 1px solid #c8ced3;
+    border-radius: 50%;
+    color: #fff;
+}
+
+.bg-Unselect-Score{
+    background-color: #e2e2e2;
+}
+
+.bg-Hight-Score {
+    background-color: #28a745;
+}
+
+.bg-Medium-Score {
+    background-color: #fc3;
+}
+
+.bg-Low-Score {
+    background-color: #f00;
+}
+
+.mini{
+    height: 30px;
+    width: 30px;
+}
+
+.large {
+    font-size: 20px;
+    height: 45px;
+    width: 45px;
+}
+
+.thumbs-up{
+    margin-right: 1rem
+}
+
+.thumbs-up i, .thumbs-down i{
+    color: #666;
+    margin-right: .1rem;
+    font-size: 1rem;
+}
+
+.count {
+    display: inline-block;
+    text-align: right;
+    min-width: 1rem;
+}

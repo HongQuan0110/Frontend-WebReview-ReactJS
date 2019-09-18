@@ -9,13 +9,17 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { IntlProvider } from "react-intl";
 import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "./store/index";
 
 ReactDOM.render(
-    <IntlProvider locale="en">
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-    </IntlProvider>
+    <Provider store={store}>
+        <IntlProvider locale="en">
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </IntlProvider>
+    </Provider>
 , document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

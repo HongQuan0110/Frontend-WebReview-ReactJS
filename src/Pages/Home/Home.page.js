@@ -30,13 +30,13 @@ class Dashboard extends Component {
 
   render() {
     const a = this.props.data;
-    a.then(e => console.log(e))
+    console.log(a.phone);
     return (
       <div className="animated fadeIn">
         <h3 className="text-primary border-bottom d-flex align-items-center pt-2">Mới nhất</h3>
         <Row>
           <Col className="" xs="12" sm="6" lg="3">
-            <NavLink to="/dien-thoai/123">
+            <NavLink to="/dien-thoai/5d81cd01500fef2e080b8a6e">
               <img alt="" height="250" width="auto" src="https://images.fpt.shop/unsafe/fit-in/192x192/filters:quality(90):fill(white)/cdn.fptshop.com.vn/Uploads/Originals/2019/8/8/637008693100566121_SS-note-10-pl-dd-1.png" ></img>
             </NavLink>
               <h4 className="pt-2">Samsung galaxy</h4>

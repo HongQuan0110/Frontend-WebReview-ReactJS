@@ -1,8 +1,13 @@
+import { connect } from "react-redux";
 import React, { Component } from 'react';
 import { Row, Col, Table, Button, Form, FormGroup, Label, Input } from "reactstrap";
 import { Doughnut } from 'react-chartjs-2';
+
+import { appConfig } from "../../configs/app.config";
+import { getProductById } from "../../actions/phone.action";
 import Comment from "../../components/common/comment";
 import Score from '../../components/common/score';
+import Modal from "../../components/modals/modal.info";
 
 class Phone extends Component {
     constructor(props){
@@ -33,14 +38,28 @@ class Phone extends Component {
             }
         }
     }
+
+
+    componentDidMount(){
+        this.props.getProductById(this.props.match.params.id);
+    }
+
     render() {
         const {doughnut, options} = this.state;
+        const { phoneInfo} = this.props;
+        const {phone} = phoneInfo
+        console.log(phone)
         return (
             <div>
-                <h3 className="border-bottom d-flex align-items-center pt-2">Samsung Galaxy</h3>
+                <Modal 
+                    isOpen={true}
+                    name={phone ? phone.product.name : ""}
+                    productDetail={phone ? phone.productDetail : ""}
+                />
+                <h3 className="border-bottom d-flex align-items-center pt-2">{phone ? phone.product.name : ""}</h3>
                 <Row>
                     <Col xs="12" sm="4">
-                        <img alt="" height="250" width="auto" src="https://images.fpt.shop/unsafe/fit-in/192x192/filters:quality(90):fill(white)/cdn.fptshop.com.vn/Uploads/Originals/2019/8/8/637008693100566121_SS-note-10-pl-dd-1.png" ></img>
+                        <img alt="" height="250" width="auto" src={phone ? `${appConfig.apiProductImage}/${phone.product.image}` : ""} ></img>
                     </Col>
 
                     <Col xs="12" sm="4">
@@ -91,29 +110,64 @@ class Phone extends Component {
                 <Row>
                     <Col xs="12" sm="4">
                         <h4>Thông số kỹ thuật</h4>
+                        {phone && phone.productDetail && 
+                        <div>
                             <Table>
                                 <tbody>
                                     <tr>
                                         <td style={{width: "150px"}}>Màn hình</td>
-                                        <td>Chính 12 MP & Phụ 12 MP, 16 MP</td>
+                                        <td>{phone.productDetail.screen.screenTechnology}</td>
                                     </tr>
                                     <tr>
                                         <td>Hệ điều hành</td>
-                                        <td>Chính 12 MP & Phụ 12 MP, 16 MP</td>
+                                        <td>{phone.productDetail.platform.os}</td>
                                     </tr>
                                     <tr>
                                         <td>Camera trước</td>
-                                        <td>Chính 12 MP & Phụ 12 MP, 16 MP</td>
+                                        <td>{phone.productDetail.selfieCamera.resolution}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Camera sau</td>
+                                        <td>{phone.productDetail.mainCamera.resolution}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>CPU</td>
+                                        <td>{phone.productDetail.platform.cpu}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>RAM</td>
+                                        <td>{phone.productDetail.memory.ram}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bộ nhớ trong</td>
+                                        <td>{phone.productDetail.memory.rom}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thẻ nhớ</td>
+                                        <td>{phone.productDetail.memory.cardSlot}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thẻ SIM</td>
+                                        <td>{phone.productDetail.comms.sim}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dung lượng pin</td>
+                                        <td>{phone.productDetail.battery.capacity}</td>
                                     </tr>
                                 </tbody>
+                                
                             </Table>
+                            <Button className="mb-2" outline color="primary" size="lg" block>Xem cấu hình chi tiết</Button>
+                            </div>
+                        }
                     </Col>
 
                     <Col xs="12" sm="8">
                         <h4>Đánh giá khác</h4>
-                        <Comment score={9} sizeScore="large"></Comment>
-                        <Comment score={6} sizeScore="large"></Comment>
-                        <Comment score={3} sizeScore="large"></Comment>
+                        {phone && phone.comments && phone.comments.map((val, idx) => {
+                           return <Comment key={idx} user={phone.users[idx]} comment={val} sizeScore="large"></Comment>
+                        })}
+                        
                     </Col>
                 </Row>
             </div>
@@ -121,4 +175,18 @@ class Phone extends Component {
     }
 }
 
-export default Phone;
+const mapStateToProps = (state, ownProps) => {
+    return {
+        phoneInfo: state.phone
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        getProductById: (id) => {
+            dispatch(getProductById(id));
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Phone);

@@ -24,7 +24,7 @@ export default class RequestHelper{
         })
         .then(result => result.data)
         .catch(err => {
-            console.log(err);
+            // console.log(err);
         })
     }
 

@@ -13,17 +13,7 @@ class Dashboard extends Component {
   }
 
   componentDidMount(){
-    axios
-    .post("http://localhost:3001/login", {
-      email: "lvhquan0110@gmail.com",
-      password: "quan12345"
-    })
-    .then(function(response) {
-      console.log(response);
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
+    
   }
 
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>

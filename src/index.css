@@ -59,6 +59,14 @@
     background: #f00;
 }
 
+/* Component modal */
+
+.header-product-detail {
+    padding: 0.75em !important;
+    color: red;
+    font-weight: 700;
+}
+
 /* Pages */
 .wrap-score{
     display: inline-block;

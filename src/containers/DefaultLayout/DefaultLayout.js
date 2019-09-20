@@ -2,6 +2,8 @@ import React, { Component, Suspense } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import * as router from 'react-router-dom';
 import { Container } from 'reactstrap';
+import { connect } from "react-redux";
+import { getProfileUser } from "../../actions/auth.action";
 
 import {
   AppAside,
@@ -35,7 +37,13 @@ class DefaultLayout extends Component {
     this.props.history.push('/login')
   }
 
+  componentDidMount() {
+    this.props.getProfileUser();
+  }
+  
+
   render() {
+    const {user} = this.props;
     return (
       <div className="app">
         <AppHeader fixed>
@@ -91,4 +99,18 @@ class DefaultLayout extends Component {
   }
 }
 
-export default DefaultLayout;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    user: state.auth.user
+  }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    getProfileUser: () => {
+      dispatch(getProfileUser());
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DefaultLayout);

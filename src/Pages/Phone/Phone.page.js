@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import React, { Component } from 'react';
 import { Row, Col, Table, Button, Form, FormGroup, Label, Input } from "reactstrap";
 import { Doughnut } from 'react-chartjs-2';
+import { Redirect } from "react-router-dom";
 
 import { appConfig } from "../../configs/app.config";
 import { getProductById } from "../../actions/phone.action";
@@ -13,6 +14,8 @@ class Phone extends Component {
     constructor(props){
         super(props);
         this.state = {
+            isLogin: false,
+            isOpenModal: false,
             doughnut: {
                 labels: [
                   'Số điểm',
@@ -39,24 +42,35 @@ class Phone extends Component {
         }
     }
 
+    toggleModalInfo = () => {
+        this.setState({
+            isOpenModal: !this.state.isOpenModal
+        })
+    }
 
     componentDidMount(){
         this.props.getProductById(this.props.match.params.id);
     }
 
+
     render() {
-        const {doughnut, options} = this.state;
+        const {doughnut, options, isOpenModal} = this.state;
         const { phoneInfo} = this.props;
-        const {phone} = phoneInfo
-        console.log(phone)
+        const {phone} = phoneInfo;
         return (
-            <div>
-                <Modal 
-                    isOpen={true}
-                    name={phone ? phone.product.name : ""}
-                    productDetail={phone ? phone.productDetail : ""}
-                />
-                <h3 className="border-bottom d-flex align-items-center pt-2">{phone ? phone.product.name : ""}</h3>
+            <div >
+                {
+                    phone && 
+                    <Modal 
+                        isOpen={isOpenModal}
+                        name={phone.product.name}
+                        productDetail={phone.productDetail}
+                        toggle={this.toggleModalInfo}
+                    />
+                }
+
+                
+                <h3  className="border-bottom d-flex align-items-center pt-2">{phone ? phone.product.name : ""}</h3>
                 <Row>
                     <Col xs="12" sm="4">
                         <img alt="" height="250" width="auto" src={phone ? `${appConfig.apiProductImage}/${phone.product.image}` : ""} ></img>
@@ -101,7 +115,7 @@ class Phone extends Component {
                       
                                     </div>
                                 </Label>
-                                <Input  style={{height: "100px", maxHeight: "250px", minHeight: "56px"}} type="textarea" name="text" id="exampleText" />
+                                <Input onClick={this.checkLogin}  style={{height: "100px", maxHeight: "250px", minHeight: "56px"}} type="textarea" name="text" id="exampleText" />
                             </FormGroup>
                         </Form>
                     </Col>
@@ -157,7 +171,7 @@ class Phone extends Component {
                                 </tbody>
                                 
                             </Table>
-                            <Button className="mb-2" outline color="primary" size="lg" block>Xem cấu hình chi tiết</Button>
+                            <Button className="mb-2" outline color="primary" size="lg" onClick={this.toggleModalInfo} block>Xem cấu hình chi tiết</Button>
                             </div>
                         }
                     </Col>
@@ -177,7 +191,8 @@ class Phone extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        phoneInfo: state.phone
+        phoneInfo: state.phone,
+        user: state.auth.user
     }
 }
 

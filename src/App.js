@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {  Route, Switch } from 'react-router-dom';
 // import { renderRoutes } from 'react-router-config';
 import './App.scss';
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
 
@@ -27,6 +29,7 @@ class App extends Component {
           <Route exact path="/500" name="Page 500" render={props => <Page500 {...props}/>} />
           <Route path="/" name="Home" render={props => <DefaultLayout {...props}/>} />
         </Switch>
+        <ToastContainer />
       </React.Suspense>
     );
   }

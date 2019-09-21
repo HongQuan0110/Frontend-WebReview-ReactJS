@@ -32,13 +32,19 @@ class Login extends Component {
     }
     else{
       cookie.save("token", token);
-      this.props.history.goBack();
+      const url = this.props.location.state;
+      console.log(url)
+      if (url){
+        console.log(true)
+        return this.props.history.push(url);
+      }
+      return this.props.history.push("/")
     }
   }
 
   render() {
     const {email, password} = this.state;
-    console.log()
+    console.log(this.state, this.props)
     return (
       <div className="app flex-row align-items-center">
         <Container>

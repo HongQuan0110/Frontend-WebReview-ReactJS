@@ -78,3 +78,18 @@
     right: 0;
     top: 0;
 }
+
+.btn-send-comment{
+    float: right;
+    margin-top: 10px;
+}
+
+.form-group-comment::after{
+    clear: both;
+    display: block;
+    content: "";
+}
+
+.score-hover:hover{
+    cursor: pointer;
+}

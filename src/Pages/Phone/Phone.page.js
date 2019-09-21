@@ -2,8 +2,9 @@ import { connect } from "react-redux";
 import React, { Component } from 'react';
 import { Row, Col, Table, Button, Form, FormGroup, Label, Input } from "reactstrap";
 import { Doughnut } from 'react-chartjs-2';
-import { Redirect } from "react-router-dom";
+import { toast } from "react-toastify";
 
+import CommentApi from "../../api/comment.api";
 import { appConfig } from "../../configs/app.config";
 import { getProductById } from "../../actions/phone.action";
 import Comment from "../../components/common/comment";
@@ -14,7 +15,13 @@ class Phone extends Component {
     constructor(props){
         super(props);
         this.state = {
-            isLogin: false,
+            comment: {
+                productId: this.props.match.params.id,
+                score: 0,
+                content: ""
+            },
+            listSore: [1,2,3,4,5,6,7,8,9,10],
+            nodeScore: 0,
             isOpenModal: false,
             doughnut: {
                 labels: [
@@ -48,14 +55,75 @@ class Phone extends Component {
         })
     }
 
+    checkLogin = () => {
+        if(this.props.user.msg) {
+            return this.props.history.push("/login", this.props.match.url);
+        }
+    }
+
+    onChange = (e) => {
+        const {comment} = this.state;
+        comment.content = e.target.value;
+        this.setState({
+            comment
+        })
+    }
+
+    onSubmitComment = async (e) => {
+        const {comment} = this.state;
+        e.preventDefault();
+        if(this.props.user.msg) {
+            return this.props.history.push("/login", this.props.match.url);
+        }
+        if(!comment.content.trim()){
+            return toast.error("Bạn phải nhập nhận xét");
+        }
+        else if (comment.score === 0){
+            return toast.error("Bạn phải chọn điểm dánh giá");
+        }
+        else{
+            await CommentApi.AddComment(comment);
+            this.props.getProductById(this.props.match.params.id);
+            comment.content = "";
+            comment.score = 0;
+            this.setState({
+                comment
+            })
+        }
+    }
+
+    onMouseOver = (e, val) => {
+        this.setState({
+            nodeScore: val
+        })
+    }
+
+    onMouseLeave = (e, val) => {
+        this.setState({
+            nodeScore: 0
+        })
+    }
+
+    onClick = (e, val) => {
+        if(this.props.user.msg) {
+            return this.props.history.push("/login", this.props.match.url);
+        }
+        
+        const {comment} = this.state;
+        comment.score = val;
+        this.setState({
+            comment
+        })
+    }
+
     componentDidMount(){
         this.props.getProductById(this.props.match.params.id);
     }
 
 
     render() {
-        const {doughnut, options, isOpenModal} = this.state;
-        const { phoneInfo} = this.props;
+        const {doughnut, options, isOpenModal, comment, listSore, nodeScore} = this.state;
+        const { phoneInfo, user} = this.props;
         const {phone} = phoneInfo;
         return (
             <div >
@@ -93,29 +161,31 @@ class Phone extends Component {
 
                     <Col xs="12" sm="8">
                         <h4>Nhận xét</h4>
-                        <Form>
-                            <FormGroup>
+                        <Form onSubmit={e => this.onSubmitComment(e)}>
+                            <FormGroup className="form-group-comment">
                                 <Label for="">
                                     <div className="d-flex">
                                         <span className="d-flex align-items-center mr-4">
                                             Điểm sản phẩm: 
                                         </span>
-                                        <div>
-                                            <Score sizeScore="mini" select={false}>1</Score>
-                                        </div>
-                                        <Score sizeScore="mini" select={false}>2</Score>
-                                        <Score sizeScore="mini" select={false}>3</Score>
-                                        <Score sizeScore="mini" select={false}>4</Score>
-                                        <Score sizeScore="mini" select={false}>5</Score>
-                                        <Score sizeScore="mini" select={false}>6</Score>
-                                        <Score sizeScore="mini" select={false}>7</Score>
-                                        <Score sizeScore="mini" select={false}>8</Score>
-                                        <Score sizeScore="mini" select={false}>9</Score>
-                                        <Score sizeScore="mini" select={false}>10</Score>
+                                        {
+                                            listSore.map((val, idx) => {
+                                                return <Score 
+                                                onMouseOver={(e) => this.onMouseOver(e, val)}  
+                                                onMouseLeave={(e) => this.onMouseLeave(e, val)}
+                                                onClick={(e) => this.onClick(e, val)}
+                                                key={idx} 
+                                                sizeScore="mini"
+                                                classname="score-hover"
+                                                select={val <= nodeScore || val <= comment.score}>{val}</Score>
+                                            })
+                                        }
+                                        
                       
                                     </div>
                                 </Label>
-                                <Input onClick={this.checkLogin}  style={{height: "100px", maxHeight: "250px", minHeight: "56px"}} type="textarea" name="text" id="exampleText" />
+                                <Input value={comment.content} onChange={e => this.onChange(e)} onClick={this.checkLogin}  style={{height: "100px", maxHeight: "250px", minHeight: "56px"}} type="textarea" name="text" id="exampleText" />
+                                <Button className="btn-send-comment" outline color="dark">Gửi</Button>
                             </FormGroup>
                         </Form>
                     </Col>

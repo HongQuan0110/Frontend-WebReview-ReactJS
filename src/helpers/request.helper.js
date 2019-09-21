@@ -7,6 +7,7 @@ const instance = axios.create({
 
 export default class RequestHelper{
     static async getHeader(config = {}){
+        console.log(cookie.load("token"))
         return {
             accept: "application/json",
             contentType: "application/json",

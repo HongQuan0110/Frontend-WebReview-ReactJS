@@ -47,7 +47,13 @@
     color: #666;
     margin-right: .1rem;
     font-size: 1rem;
+    opacity: 80%;
 }
+
+.thumbs-up i:hover, .thumbs-down i:hover{
+    cursor: pointer;
+    opacity: 100%;
+} 
 
 .count {
     display: inline-block;
@@ -65,6 +71,13 @@
     padding: 0.75em !important;
     color: red;
     font-weight: 700;
+}
+
+/* Component classify */
+.classify {
+    padding: 10px;
+    color: white;
+    border-radius: 10px;
 }
 
 /* Pages */

@@ -2,7 +2,7 @@ import axios from "axios";
 import cookie from "react-cookies";
 
 const instance = axios.create({
-    timeout: 1000
+    timeout: 10000
 })
 
 export default class RequestHelper{
@@ -10,7 +10,7 @@ export default class RequestHelper{
         console.log(cookie.load("token"))
         return {
             accept: "application/json",
-            contentType: "application/json",
+            // contentType: "application/json",
             Authorization: `bearer ${cookie.load("token")}`,
             ...config
         }

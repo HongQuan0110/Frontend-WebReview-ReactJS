@@ -3,6 +3,7 @@ import { FormattedDate } from "react-intl";
 
 import { appConfig } from "../../configs/app.config";
 import Score from "./score";
+import Classify from "./classify"
 
 class Comment extends Component {
     render() {
@@ -18,7 +19,8 @@ class Comment extends Component {
                         <span><FormattedDate value={comment.createdAt} /></span>
                     </div>
                     <div className="ml-auto">
-                        <Score select={true} sizeScore={sizeScore}>{comment.score}</Score>
+                        {/* <Score select={true} sizeScore={sizeScore}>{comment.score}</Score> */}
+                        <Classify>{comment.analysis}</Classify>
                     </div>
                 </div>
                 <div>

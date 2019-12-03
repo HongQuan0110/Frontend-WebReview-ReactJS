@@ -1,7 +1,6 @@
 import { connect } from "react-redux";
 import React, { Component } from 'react';
 import { Row, Col, Table, Button, Form, FormGroup, Label, Input } from "reactstrap";
-import { Doughnut } from 'react-chartjs-2';
 import { toast } from "react-toastify";
 
 import CommentApi from "../../api/comment.api";
@@ -10,6 +9,7 @@ import { getProductById } from "../../actions/phone.action";
 import Comment from "../../components/common/comment";
 import Score from '../../components/common/score';
 import Modal from "../../components/modals/modal.info";
+import Chart from "../../components/common/chart";
 
 class Phone extends Component {
     constructor(props){
@@ -29,7 +29,7 @@ class Phone extends Component {
                 ],
                 datasets: [
                 {
-                    data: [5, 5],
+                    data: [0, 5],
                     backgroundColor: [
                         '#FF6384',
                     ],
@@ -78,12 +78,14 @@ class Phone extends Component {
         if(!comment.content.trim()){
             return toast.error("Bạn phải nhập nhận xét");
         }
-        else if (comment.score === 0){
-            return toast.error("Bạn phải chọn điểm dánh giá");
-        }
+        // else if (comment.score === 0){
+        //     return toast.error("Bạn phải chọn điểm dánh giá");
+        // }
         else{
+            let kq = await CommentApi.SentimentAnalysis(comment.content);
+            comment.analysis = kq[0]
             await CommentApi.AddComment(comment);
-            this.props.getProductById(this.props.match.params.id);
+            await this.props.getProductById(this.props.match.params.id);
             comment.content = "";
             comment.score = 0;
             this.setState({
@@ -120,6 +122,54 @@ class Phone extends Component {
         this.props.getProductById(this.props.match.params.id);
     }
 
+    showChart = (comments) => {
+        if(comments){
+            let countPositive = 0;
+            let countNegative = 0;
+            let countNeutral = 0;
+            comments.map(val => {
+                if(val.analysis === 'Tích cực'){
+                    countPositive++
+                }
+                else if(val.analysis === 'Tiêu cực'){
+                    countNegative++
+                }
+                else{
+                    countNeutral++
+                }
+            })
+            this.setState({
+                doughnut: {
+                    labels: [
+                      'Tích cực',
+                      'Tiêu cực',
+                      'Bình thường'
+                    ],
+                    datasets: [
+                    {
+                        data: [countPositive, countNegative, countNeutral],
+                        backgroundColor: [
+                            '#28a745',
+                            '#f00',
+                            '#fc3'
+                        ],
+                    }],
+                    
+                },
+                options: {
+                    title: {
+                        display: false,
+                        text: '5.0/10',
+                        position: 'bottom'
+                    },
+                    tooltips: {
+                        enabled: false
+                    }
+                }
+            })
+        }
+    }
+    
 
     render() {
         const {doughnut, options, isOpenModal, comment, listSore, nodeScore} = this.state;
@@ -145,10 +195,9 @@ class Phone extends Component {
                     </Col>
 
                     <Col xs="12" sm="4">
-                    
-                        <Doughnut data={doughnut} options={options} />
-                        
-                       
+                        {
+                            phone && <Chart dataComments={phone.comments} ></Chart>                        
+                        }
                     </Col>
                 </Row>
                 <br></br>
@@ -163,7 +212,7 @@ class Phone extends Component {
                         <h4>Nhận xét</h4>
                         <Form onSubmit={e => this.onSubmitComment(e)}>
                             <FormGroup className="form-group-comment">
-                                <Label for="">
+                                {/* <Label for="">
                                     <div className="d-flex">
                                         <span className="d-flex align-items-center mr-4">
                                             Điểm sản phẩm: 
@@ -180,10 +229,8 @@ class Phone extends Component {
                                                 select={val <= nodeScore || val <= comment.score}>{val}</Score>
                                             })
                                         }
-                                        
-                      
                                     </div>
-                                </Label>
+                                </Label> */}
                                 <Input value={comment.content} onChange={e => this.onChange(e)} onClick={this.checkLogin}  style={{height: "100px", maxHeight: "250px", minHeight: "56px"}} type="textarea" name="text" id="exampleText" />
                                 <Button className="btn-send-comment" outline color="dark">Gửi</Button>
                             </FormGroup>

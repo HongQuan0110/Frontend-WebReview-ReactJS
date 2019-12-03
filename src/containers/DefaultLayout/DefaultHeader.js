@@ -32,10 +32,10 @@ class DefaultHeader extends Component {
             <NavLink to="/" className="nav-link" >Trang chủ</NavLink>
           </NavItem>
           <NavItem className="px-3">
-            <Link to="/users" className="nav-link">Users</Link>
+            <Link to="/dien-thoai" className="nav-link">Điện thoại</Link>
           </NavItem>
           <NavItem className="px-3">
-            <NavLink to="#" className="nav-link">Settings</NavLink>
+            <NavLink to="/them" className="nav-link">Settings</NavLink>
           </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar>

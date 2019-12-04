@@ -1,8 +1,8 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, put, takeLatest, takeEvery } from "redux-saga/effects";
 
-import { getProductByIdSuccess, getProductByIdFailed } from "../actions/phone.action";
+import { getProductByIdSuccess, getProductByIdFailed, getProductsSuccess, getProductsFailed } from "../actions/phone.action";
 import ProductApi from "../api/phone.api";
-import { GET_PRODUCT_BY_ID } from "../actions/phone.action";
+import { GET_PRODUCT_BY_ID, GET_PRODUCTS } from "../actions/phone.action";
 
 function* getProductById(action){
     try {
@@ -13,6 +13,16 @@ function* getProductById(action){
     }
 }
 
+function* getProducts(action){
+    try {
+        const products = yield call(ProductApi.getProducts);
+        yield put(getProductsSuccess(products));
+    } catch (error) {
+        yield put(getProductsFailed());
+    }
+}
+
 export function* watchProductSagaAsync(){
-    yield takeLatest(GET_PRODUCT_BY_ID, getProductById);
+    yield takeEvery(GET_PRODUCT_BY_ID, getProductById);
+    yield takeEvery(GET_PRODUCTS, getProducts);
 }

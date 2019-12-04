@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import React, { Component } from 'react';
 import { Row, Col, Table, Button, Form, FormGroup, Label, Input } from "reactstrap";
 import { toast } from "react-toastify";
-
+import { Doughnut } from 'react-chartjs-2';
 import CommentApi from "../../api/comment.api";
 import { appConfig } from "../../configs/app.config";
 import { getProductById } from "../../actions/phone.action";
@@ -29,7 +29,7 @@ class Phone extends Component {
                 ],
                 datasets: [
                 {
-                    data: [0, 5],
+                    data: [0, 2],
                     backgroundColor: [
                         '#FF6384',
                     ],
@@ -195,6 +195,7 @@ class Phone extends Component {
                     </Col>
 
                     <Col xs="12" sm="4">
+                    {/* <Doughnut data={doughnut} options={options} /> */}
                         {
                             phone && <Chart dataComments={phone.comments} ></Chart>                        
                         }

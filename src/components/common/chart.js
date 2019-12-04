@@ -28,6 +28,17 @@ class Chart extends Component {
                 countNeutral++
             }
         })
+        
+        let data, enabled;
+        if (countPositive > 0 || countNegative > 0 || countNeutral > 0){
+            data = [countPositive, countNegative, countNeutral];
+            enabled = true;
+        }
+        else {
+            data = [0,0,0,1];
+            enabled = false;
+        }
+
         this.setState({
             doughnut: {
                 labels: [
@@ -37,7 +48,7 @@ class Chart extends Component {
                 ],
                 datasets: [
                 {
-                    data: [countPositive, countNegative, countNeutral],
+                    data,
                     backgroundColor: [
                         '#28a745',
                         '#f00',
@@ -53,7 +64,7 @@ class Chart extends Component {
                     position: 'bottom'
                 },
                 tooltips: {
-                    enabled: true
+                    enabled
                 }
             }
         })

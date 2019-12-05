@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import {
     Button, Col, Row, Form,
-    Label, Input, FormGroup, CardHeader
+    Label, Input, FormGroup, CardHeader,
+    InputGroup, InputGroupAddon,
+    Dropdown, DropdownItem, DropdownMenu, DropdownToggle
 } from 'reactstrap';
 
 import { connect } from "react-redux";
@@ -11,15 +13,24 @@ import { appConfig } from "../../configs/app.config";
 import { getProducts } from "../../actions/phone.action";
 import phoneApi from "../../api/phone.api";
 import Modal from "../../components/modals/modal";
+import ModalConfirm from "../../components/modals/modal.comfirm";
 
 class PhoneSettings extends Component {
     constructor(props) {
         super(props)
         this.state = {
             isOpenModal: false,
+            isShowModalConfirm: false,
+            isOpenDropdownLabel: false,
+            isOpenDropdownSort: false,
             phoneItem: {
-                flash: true
+                flash: true,
+                label: "iPhone"
             },
+            params: {},
+            label: ["iPhone", "Samsung", "OPPO", "Xiaomi", "Realme", "Vivo", "Nokia", "VSmart",
+            "Huawei", "HONOR", "Masstel", "Itel", "BlackBerry", "mobell", "coolpad"],
+            sort: "Mới nhất"
         }
     }
 
@@ -28,6 +39,12 @@ class PhoneSettings extends Component {
             isOpenModal: !this.state.isOpenModal,
             title,
             phoneItem
+        })
+    }
+
+    toggleDeleteModal = () => {
+        this.setState({
+            isShowModalConfirm: !this.state.isShowModalConfirm
         })
     }
 
@@ -53,7 +70,7 @@ class PhoneSettings extends Component {
 
     showAddNew = () => {
         let title = "Thêm mới";
-        this.toggleModal(title, {flash: true})
+        this.toggleModal(title, { flash: true, label: "iPhone" })
     }
 
     savePhone = () => {
@@ -120,10 +137,11 @@ class PhoneSettings extends Component {
     addPhone = async () => {
         const { image } = this.state.phoneItem;
         let phoneItem = Object.assign({}, this.state.phoneItem);
+        console.log(phoneItem)
         try {
             let phone = this.handlePhoneData(phoneItem);
             phone.image = await this.uploadImage(image);
-            
+            console.log(phone.image)
             await phoneApi.addPhone(phone);
             this.setState({
                 phoneItem: {
@@ -133,7 +151,7 @@ class PhoneSettings extends Component {
             this.props.getProducts();
             this.toggleModal("", {})
         } catch (error) {
-
+            console.log(error.message)
         }
     }
 
@@ -141,16 +159,21 @@ class PhoneSettings extends Component {
         try {
             const { phoneItem } = this.state;
             let phoneUpdate = this.handlePhoneData(phoneItem);
+            if (typeof phoneItem.image === 'object') {
+                phoneUpdate.image = await this.uploadImage(phoneItem.image);
+            }
             await phoneApi.updateProductById(phoneItem.id, phoneUpdate);
+            this.props.getProducts();
             this.toggleModal();
         } catch (error) {
-            
+            console.log(error.message)
         }
     }
 
     uploadImage = async (image) => {
         try {
             let imageResult = await phoneApi.uploadFile(image);
+            console.log(imageResult);
             return imageResult.filename;
         } catch (error) {
             console.log(error.message);
@@ -162,7 +185,7 @@ class PhoneSettings extends Component {
         this.savePhone();
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.getProducts();
     }
 
@@ -170,67 +193,146 @@ class PhoneSettings extends Component {
         try {
             const { phoneItem } = this.state;
             let phoneResult = await phoneApi.getProductById(id);
+            console.log(phoneResult);
             phoneItem.id = id;
             phoneItem.name = phoneResult.product.name;
             phoneItem.label = phoneResult.product.label;
             phoneItem.price = phoneResult.product.price;
             phoneItem.image = phoneResult.product.image;
             const { productDetail } = phoneResult;
-            if(productDetail.screen){
+            if (productDetail.screen) {
                 phoneItem.screenTechnology = productDetail.screen.screenTechnology;
                 phoneItem.screenResolution = productDetail.screen.resolution;
                 phoneItem.size = productDetail.screen.size;
                 phoneItem.touchScreen = productDetail.screen.touchScreen;
             }
-            if (productDetail.mainCamera){
+            if (productDetail.mainCamera) {
                 phoneItem.mainCameraResolution = productDetail.mainCamera.resolution;
                 phoneItem.mainCameraVideo = productDetail.mainCamera.video;
                 phoneItem.flash = productDetail.mainCamera.flash;
             }
-            if (productDetail.selfieCamera){
+            if (productDetail.selfieCamera) {
                 phoneItem.selfieCameraResolution = productDetail.selfieCamera.resolution;
                 phoneItem.selfieCameraVideo = productDetail.selfieCamera.video;
             }
-            if (productDetail.platform){
+            if (productDetail.platform) {
                 phoneItem.os = productDetail.platform.os;
                 phoneItem.chipset = productDetail.platform.chipset;
                 phoneItem.cpu = productDetail.platform.cpu;
                 phoneItem.gpu = productDetail.platform.gpu;
             }
-            if (productDetail.memory){
+            if (productDetail.memory) {
                 phoneItem.rom = productDetail.memory.rom;
                 phoneItem.ram = productDetail.memory.ram;
                 phoneItem.cardSlot = productDetail.memory.cardSlot;
             }
-            if (productDetail.comms){
+            if (productDetail.comms) {
                 phoneItem.sim = productDetail.comms.sim;
                 phoneItem.wifi = productDetail.comms.wifi;
                 phoneItem.gps = productDetail.comms.gps;
                 phoneItem.bluetooth = productDetail.comms.bluetooth;
                 phoneItem.jack = productDetail.comms.jack;
             }
-            if (productDetail.body){
+            if (productDetail.body) {
                 phoneItem.dimensions = productDetail.body.dimensions;
                 phoneItem.weight = productDetail.body.weight;
                 phoneItem.build = productDetail.body.build;
             }
-            if (productDetail.battery){
+            if (productDetail.battery) {
                 phoneItem.type = productDetail.battery.type;
                 phoneItem.capacity = productDetail.battery.capacity;
             }
-            
+
             this.toggleModal("Chỉnh sửa", phoneItem);
         } catch (error) {
-            
+            console.log(error.message)
         }
     }
 
+    onClickDeletePhone = (id) => {
+        try {
+            this.setState({
+                phoneItem: {
+                    id
+                }
+            }, () => this.toggleDeleteModal())
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    deletePhone = async () => {
+        try {
+            const { id } = this.state.phoneItem;
+            console.log(id)
+            await phoneApi.deleteProductById(id);
+            this.props.getProducts();
+            this.toggleDeleteModal();
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    onSearchChange = (e) => {
+        const {params} = this.state;
+        params.name = e.target.value;
+        this.setState({
+            params
+        }, () => {
+            // this.props.getProducts(this.state.params)
+        })
+    }
+
+    onClickSearch = () => {
+        const { params } = this.state;
+        console.log(params)
+        this.props.getProducts(params);
+    }
+
+    toggleDropdownLabel = () => {
+        console.log(123)
+        this.setState({
+            isOpenDropdownLabel: !this.state.isOpenDropdownLabel
+        })
+    }
+
+    onClickSelectLabel = (label) => {
+        const {params} = this.state;
+        params.label = label;
+        console.log(params)
+        this.setState({
+            params
+        }, () => {
+            this.props.getProducts(this.state.params)
+        })
+    }
+
+    toggleDropdownSort = () => {
+        this.setState({
+            isOpenDropdownSort: !this.state.isOpenDropdownSort
+        })
+    }
+
+    onClickSelectSort = (sort) => {
+        const {params} = this.state;
+        params.sort = sort;
+        this.setState({
+            params
+        }, () => this.props.getProducts(this.state.params));
+    }
+
     render() {
-        const { isOpenModal, phoneItem, title } = this.state;
+        const { isOpenModal, phoneItem, title, isShowModalConfirm, isOpenDropdownLabel, label, params, isOpenDropdownSort, sort } = this.state;
         const { data } = this.props;
         const { phoneList } = data;
         return (
             <div>
+                <ModalConfirm
+                    isShowModal={isShowModalConfirm}
+                    clickOk={this.deletePhone}
+                    toggleModal={this.toggleDeleteModal}
+                />
+
                 <Modal
                     isOpen={isOpenModal}
                     toggle={e => this.toggleModal()}
@@ -264,9 +366,12 @@ class PhoneSettings extends Component {
                             <Row>
                                 <Col>
                                     <Label for="label">Nhãn hiệu</Label>
-                                    <Input type="text" name="label" id="label"
-                                        value={phoneItem.label || ""} onChange={this.onHandleChange}
-                                    />
+                                    <Input type="select" name="label" id="label"
+                                        value={phoneItem.label} onChange={this.onHandleChange}
+                                    >
+                                        {label.map((val, idx) => <option key={idx} value={val}>{val}</option>)}
+                                        
+                                    </Input>
                                 </Col>
                                 <Col>
                                     <Label for="price">Giá</Label>
@@ -533,20 +638,49 @@ class PhoneSettings extends Component {
                         <Button onClick={this.showAddNew} block color="primary">Thêm mới</Button>
                     </Col>
                     <Col className="mb-3 mb-xl-0 d-flex align-items-center">
-                        <div className=" ml-auto">sadsa</div>
+                        <div className="ml-auto d-flex">
+                            <Dropdown  isOpen={isOpenDropdownSort} toggle={this.toggleDropdownSort}>
+                                <DropdownToggle caret>
+                                    {params.sort > 0 ? "Cũ nhất" : "Mới nhất"}
+                                </DropdownToggle>
+                                <DropdownMenu className="">
+                                    <DropdownItem onClick={e => this.onClickSelectSort(-1)}>Mới nhất</DropdownItem>
+                                    <DropdownItem onClick={e => this.onClickSelectSort(1)}>Cũ nhất</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+
+                            <Dropdown  isOpen={isOpenDropdownLabel} toggle={this.toggleDropdownLabel}>
+                                <DropdownToggle caret>
+                                    {params.label ? params.label : "Tất cả"}
+                                </DropdownToggle>
+                                <DropdownMenu className="">
+                                    <DropdownItem onClick={e => this.onClickSelectLabel()}>Tất cả</DropdownItem>
+                                    {label.map((val, idx) => 
+                                        <DropdownItem onClick={e => this.onClickSelectLabel(val)} key={idx}>{val}</DropdownItem>)}
+                                </DropdownMenu>
+                            </Dropdown>
+
+                            <InputGroup>
+                                <Input onChange={this.onSearchChange} className="input-search" type="text" id="input1-group2" name="search" placeholder="Nhập tên điện thoại" />
+                                <InputGroupAddon addonType="prepend">
+                                    <Button onClick={this.onClickSearch} type="button" color="primary"><i className="fa fa-search"></i> Search</Button>
+                                </InputGroupAddon>
+                            </InputGroup>
+                        </div>
                     </Col>
                 </Row>
 
                 <Row>
-                    {phoneList && phoneList.map((val, idx) => 
-                        <Col key={idx} className="" xs="12" sm="6" lg="3">
-                            <img onClick={e => this.onClickPhone(val._id)} alt="" height="250" width="auto" src={`${appConfig.apiProductImage}/${val.image}`} ></img>
+                    {phoneList && phoneList.map((val, idx) =>
+                        <Col key={idx} className="mb-4" xs="12" sm="6" lg="3">
+                            <img className="image-hover" onClick={e => this.onClickPhone(val._id)} alt="" height="250" width="auto" src={`${appConfig.apiProductImage}/${val.image ? val.image : 'default-phone.png'}`} ></img>
                             <h5 className="pt-2">{val.name}</h5>
                             <span><FormattedNumber value={val.price} /></span>
+                            <Button onClick={e => this.onClickDeletePhone(val._id)} block color="danger">Xóa</Button>
                         </Col>
                     )}
-                    
-                    
+
+
                 </Row>
             </div>
         );
@@ -561,8 +695,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        getProducts: () => {
-            dispatch(getProducts())
+        getProducts: (params) => {
+            dispatch(getProducts(params))
         }
     }
 }

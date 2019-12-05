@@ -3,8 +3,8 @@ import { uploadFile } from "../helpers/upload.file.helper";
 import { appConfig } from "../configs/app.config";
 
 export default class ProductApi{
-    static getProducts(){
-        return requestHelper.get(`${appConfig.apiUrl}/product`);
+    static getProducts(params){
+        return requestHelper.get(`${appConfig.apiUrl}/product`, params);
     }
 
     static getProductById(id){
@@ -21,5 +21,9 @@ export default class ProductApi{
 
     static updateProductById(id, phone){
         return requestHelper.put(`${appConfig.apiUrl}/product/${id}`, phone)
+    }
+
+    static deleteProductById(id){
+        return requestHelper.delete(`${appConfig.apiUrl}/product/delete/${id}`);
     }
 }

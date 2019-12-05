@@ -1,5 +1,6 @@
 import axios from "axios";
 import cookie from "react-cookies";
+import qs from "qs";
 
 const instance = axios.create({
     timeout: 10000
@@ -21,7 +22,10 @@ export default class RequestHelper{
             method: "get",
             url: apiUrl,
             headers: await this.getHeader(),
-            params
+            params,
+            paramsSerializer: function (params) {
+                return qs.stringify(params, {arrayFormat: 'repeat'})
+            },
         })
         .then(result => result.data)
         .catch(err => {

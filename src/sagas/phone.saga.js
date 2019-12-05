@@ -15,7 +15,8 @@ function* getProductById(action){
 
 function* getProducts(action){
     try {
-        const products = yield call(ProductApi.getProducts);
+        console.log(action)
+        const products = yield call(ProductApi.getProducts, action.params);
         yield put(getProductsSuccess(products));
     } catch (error) {
         yield put(getProductsFailed());

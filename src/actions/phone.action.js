@@ -26,9 +26,10 @@ export const getProductByIdFailed = () => {
     }
 }
 
-export const getProducts = () => {
+export const getProducts = (params) => {
     return {
         type: GET_PRODUCTS,
+        params
     }
 }
 

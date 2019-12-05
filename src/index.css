@@ -106,3 +106,19 @@
 .score-hover:hover{
     cursor: pointer;
 }
+
+/* page phonesettings */
+
+.image-hover:hover{
+    cursor: pointer;
+}
+
+.input-search:focus{
+    outline: none;
+    box-shadow: none !important;
+}
+
+.dropdown-menu{
+    max-height: 170px;
+    overflow: auto;
+}

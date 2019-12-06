@@ -17,7 +17,7 @@ class Phone extends Component {
         this.state = {
             comment: {
                 productId: this.props.match.params.id,
-                score: 0,
+                // score: 0,
                 content: ""
             },
             listSore: [1,2,3,4,5,6,7,8,9,10],
@@ -83,14 +83,17 @@ class Phone extends Component {
         // }
         else{
             let kq = await CommentApi.SentimentAnalysis(comment.content);
-            comment.analysis = kq[0]
-            await CommentApi.AddComment(comment);
-            await this.props.getProductById(this.props.match.params.id);
-            comment.content = "";
-            comment.score = 0;
-            this.setState({
-                comment
-            })
+            console.log(comment);
+            if (kq){
+                comment.analysis = kq[0]
+                await CommentApi.AddComment(comment);
+                await this.props.getProductById(this.props.match.params.id);
+                comment.content = "";
+                // comment.score = 0;
+                this.setState({
+                    comment
+                })
+            }
         }
     }
 
@@ -248,43 +251,43 @@ class Phone extends Component {
                                 <tbody>
                                     <tr>
                                         <td style={{width: "150px"}}>Màn hình</td>
-                                        <td>{phone.productDetail.screen.screenTechnology}</td>
+                                        <td>{phone.productDetail.screen ? phone.productDetail.screen.screenTechnology : ""}</td>
                                     </tr>
                                     <tr>
                                         <td>Hệ điều hành</td>
-                                        <td>{phone.productDetail.platform.os}</td>
+                                        <td>{phone.productDetail.platform ? phone.productDetail.platform.os : ""}</td>
                                     </tr>
                                     <tr>
                                         <td>Camera trước</td>
-                                        <td>{phone.productDetail.selfieCamera.resolution}</td>
+                                        <td>{phone.productDetail.selfieCamera ? phone.productDetail.selfieCamera.resolution : ""}</td>
                                     </tr>
                                     <tr>
                                         <td>Camera sau</td>
-                                        <td>{phone.productDetail.mainCamera.resolution}</td>
+                                        <td>{phone.productDetail.mainCamera ? phone.productDetail.mainCamera.resolution : ""}</td>
                                     </tr>
                                     <tr>
                                         <td>CPU</td>
-                                        <td>{phone.productDetail.platform.cpu}</td>
+                                        <td>{phone.productDetail.platform ? phone.productDetail.platform.cpu : ""}</td>
                                     </tr>
                                     <tr>
                                         <td>RAM</td>
-                                        <td>{phone.productDetail.memory.ram}</td>
+                                        <td>{phone.productDetail.memory ? phone.productDetail.memory.ram : ""}</td>
                                     </tr>
                                     <tr>
                                         <td>Bộ nhớ trong</td>
-                                        <td>{phone.productDetail.memory.rom}</td>
+                                        <td>{phone.productDetail.memory ? phone.productDetail.memory.rom : ""}</td>
                                     </tr>
                                     <tr>
                                         <td>Thẻ nhớ</td>
-                                        <td>{phone.productDetail.memory.cardSlot}</td>
+                                        <td>{phone.productDetail.memory ? phone.productDetail.memory.cardSlot : ""}</td>
                                     </tr>
                                     <tr>
                                         <td>Thẻ SIM</td>
-                                        <td>{phone.productDetail.comms.sim}</td>
+                                        <td>{phone.productDetail.comms ? phone.productDetail.comms.sim : ""}</td>
                                     </tr>
                                     <tr>
                                         <td>Dung lượng pin</td>
-                                        <td>{phone.productDetail.battery.capacity}</td>
+                                        <td>{phone.productDetail.battery ? phone.productDetail.battery.capacity : ""}</td>
                                     </tr>
                                 </tbody>
                                 

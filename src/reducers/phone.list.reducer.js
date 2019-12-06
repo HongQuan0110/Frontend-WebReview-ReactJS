@@ -20,7 +20,8 @@ const ProductsReducer = (state = initProduct, action) => {
             return Object.assign({}, state, {
                 loading: false,
                 failed: false,
-                phoneList: action.data
+                phoneList: action.data.products,
+                phoneTotal: action.data.productNumber
             });
         }
 

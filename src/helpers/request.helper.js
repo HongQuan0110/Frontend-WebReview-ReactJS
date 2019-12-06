@@ -3,7 +3,7 @@ import cookie from "react-cookies";
 import qs from "qs";
 
 const instance = axios.create({
-    timeout: 10000
+    timeout: 20000
 })
 
 export default class RequestHelper{

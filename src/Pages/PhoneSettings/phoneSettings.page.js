@@ -3,7 +3,8 @@ import {
     Button, Col, Row, Form,
     Label, Input, FormGroup, CardHeader,
     InputGroup, InputGroupAddon,
-    Dropdown, DropdownItem, DropdownMenu, DropdownToggle
+    Dropdown, DropdownItem, DropdownMenu, DropdownToggle,
+    Pagination, PaginationItem, PaginationLink
 } from 'reactstrap';
 
 import { connect } from "react-redux";
@@ -27,10 +28,13 @@ class PhoneSettings extends Component {
                 flash: true,
                 label: "iPhone"
             },
-            params: {},
+            params: {
+                skip: 0
+            },
             label: ["iPhone", "Samsung", "OPPO", "Xiaomi", "Realme", "Vivo", "Nokia", "VSmart",
             "Huawei", "HONOR", "Masstel", "Itel", "BlackBerry", "mobell", "coolpad"],
-            sort: "Mới nhất"
+            indexPagination: 0,
+            limit_products: 8
         }
     }
 
@@ -85,50 +89,50 @@ class PhoneSettings extends Component {
 
     handlePhoneData = (phoneItem) => {
         let phone = {};
-        phone.name = phoneItem.name;
+        phone.name = phoneItem.name ? phoneItem.name.trim() : phoneItem.name;
         phone.label = phoneItem.label;
         phone.price = phoneItem.price;
         phone.screen = {
-            screenTechnology: phoneItem.screenTechnology,
-            resolution: phoneItem.screenResolution,
-            size: phoneItem.size,
-            touchScreen: phoneItem.touchScreen
+            screenTechnology: phoneItem.screenTechnology ? phoneItem.screenTechnology.trim() : phoneItem.screenTechnology,
+            resolution: phoneItem.screenResolution ? phoneItem.screenResolution.trim() : phoneItem.screenResolution,
+            size: phoneItem.size ? phoneItem.size.trim() : phoneItem.size,
+            touchScreen: phoneItem.touchScreen ? phoneItem.touchScreen.trim() : phoneItem.touchScreen
         }
         phone.mainCamera = {
-            resolution: phoneItem.mainCameraResolution,
-            video: phoneItem.mainCameraVideo,
+            resolution: phoneItem.mainCameraResolution ? phoneItem.mainCameraResolution.trim() : phoneItem.mainCameraResolution,
+            video: phoneItem.mainCameraVideo ? phoneItem.mainCameraVideo.trim() : phoneItem.mainCameraVideo,
             flash: phoneItem.flash
         }
         phone.selfieCamera = {
-            resolution: phoneItem.selfieCameraResolution,
-            video: phoneItem.selfieCameraVideo,
+            resolution: phoneItem.selfieCameraResolution ? phoneItem.selfieCameraResolution.trim() : phoneItem.selfieCameraResolution,
+            video: phoneItem.selfieCameraVideo ? phoneItem.selfieCameraVideo.trim() : phoneItem.selfieCameraVideo,
         }
         phone.platform = {
-            os: phoneItem.os,
-            chipset: phoneItem.chipset,
-            cpu: phoneItem.cpu,
-            gpu: phoneItem.gpu
+            os: phoneItem.os ? phoneItem.os.trim() : phoneItem.os,
+            chipset: phoneItem.chipset ? phoneItem.chipset.trim() : phoneItem.chipset,
+            cpu: phoneItem.cpu ? phoneItem.cpu.trim() : phoneItem.cpu,
+            gpu: phoneItem.gpu ? phoneItem.gpu.trim() : phoneItem.gpu
         }
         phone.memory = {
-            ram: phoneItem.ram,
-            rom: phoneItem.rom,
-            cardSlot: phoneItem.cardSlot
+            ram: phoneItem.ram ? phoneItem.ram.trim() : phoneItem.ram,
+            rom: phoneItem.rom ? phoneItem.rom.trim() : phoneItem.rom,
+            cardSlot: phoneItem.cardSlot ? phoneItem.cardSlot.trim() : phoneItem.cardSlot
         }
         phone.comms = {
-            sim: phoneItem.sim,
-            wifi: phoneItem.wifi,
-            gps: phoneItem.gps,
-            bluetooth: phoneItem.bluetooth,
-            jack: phoneItem.jack
+            sim: phoneItem.sim ? phoneItem.sim.trim() : phoneItem.sim,
+            wifi: phoneItem.wifi ? phoneItem.wifi.trim() : phoneItem.wifi,
+            gps: phoneItem.gps ? phoneItem.gps.trim() : phoneItem.gps,
+            bluetooth: phoneItem.bluetooth ? phoneItem.bluetooth.trim() : phoneItem.bluetooth,
+            jack: phoneItem.jack ? phoneItem.jack.trim() : phoneItem.jack
         }
         phone.body = {
-            dimensions: phoneItem.dimensions,
-            weight: phoneItem.weight,
-            build: phoneItem.build
+            dimensions: phoneItem.dimensions ? phoneItem.dimensions.trim() : phoneItem.dimensions,
+            weight: phoneItem.weight ? phoneItem.weight.trim() : phoneItem.weight,
+            build: phoneItem.build ? phoneItem.build.trim() : phoneItem.build
         }
         phone.battery = {
-            type: phoneItem.type,
-            capacity: phoneItem.capacity
+            type: phoneItem.type ? phoneItem.type.trim() : phoneItem.type,
+            capacity: phoneItem.capacity ? phoneItem.capacity.trim() : phoneItem.capacity
         }
         console.log(phone)
         return phone;
@@ -299,9 +303,10 @@ class PhoneSettings extends Component {
     onClickSelectLabel = (label) => {
         const {params} = this.state;
         params.label = label;
-        console.log(params)
+        params.skip = 0;
         this.setState({
-            params
+            params,
+            indexPagination: 0
         }, () => {
             this.props.getProducts(this.state.params)
         })
@@ -321,10 +326,31 @@ class PhoneSettings extends Component {
         }, () => this.props.getProducts(this.state.params));
     }
 
+    onClickPagination = (number, index) => {
+        const {params, indexPagination, limit_products} = this.state;
+        const {phoneTotal} = this.props.data;
+        let newIndexPagination = indexPagination;
+        params.skip = limit_products * (number - 1);
+
+        if (index === "-" && indexPagination > 0){
+            newIndexPagination = indexPagination - 1;
+        }
+        else if (index === "+" && params.skip + limit_products < phoneTotal){
+            newIndexPagination = indexPagination + 1;
+        }
+        this.setState({
+            params,
+            indexPagination: newIndexPagination
+        },() => {
+            this.props.getProducts(this.state.params);
+        })
+    }
+
     render() {
-        const { isOpenModal, phoneItem, title, isShowModalConfirm, isOpenDropdownLabel, label, params, isOpenDropdownSort, sort } = this.state;
+        const { isOpenModal, phoneItem, title, isShowModalConfirm, isOpenDropdownLabel, label, params, isOpenDropdownSort, indexPagination, limit_products } = this.state;
         const { data } = this.props;
-        const { phoneList } = data;
+        const { phoneList, phoneTotal } = data;
+        const currentList = phoneList ? phoneList.length : 0;
         return (
             <div>
                 <ModalConfirm
@@ -674,13 +700,49 @@ class PhoneSettings extends Component {
                     {phoneList && phoneList.map((val, idx) =>
                         <Col key={idx} className="mb-4" xs="12" sm="6" lg="3">
                             <img className="image-hover" onClick={e => this.onClickPhone(val._id)} alt="" height="250" width="auto" src={`${appConfig.apiProductImage}/${val.image ? val.image : 'default-phone.png'}`} ></img>
-                            <h5 className="pt-2">{val.name}</h5>
+                            <h6 className="pt-2">{val.name.length > 30 ? val.name.slice(0, 28) + "..." : val.name}</h6>
                             <span><FormattedNumber value={val.price} /></span>
                             <Button onClick={e => this.onClickDeletePhone(val._id)} block color="danger">Xóa</Button>
                         </Col>
                     )}
+                </Row>
 
-
+                <Row>
+                    {phoneTotal > currentList && 
+                        <Col className="d-flex">
+                            <div className="ml-auto">
+                                <Pagination >
+                                    <PaginationItem>
+                                        <PaginationLink previous tag="button" />
+                                    </PaginationItem>
+                                    <PaginationItem active={params.skip === 0}>
+                                        <PaginationLink onClick={e => this.onClickPagination(indexPagination + 1, "-")} tag="button">
+                                            {indexPagination + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                    {
+                                        phoneTotal > limit_products && 
+                                        <PaginationItem active={(params.skip > 0 && params.skip + limit_products < phoneTotal) || (params.skip > 0 && phoneTotal <= limit_products * 2) }>
+                                            <PaginationLink onClick={e => this.onClickPagination(indexPagination + 2)} tag="button">
+                                                {indexPagination + 2}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    }
+                                    {
+                                        phoneTotal > limit_products * 2 && 
+                                        <PaginationItem active={params.skip + limit_products >= phoneTotal}>
+                                            <PaginationLink onClick={e => this.onClickPagination(indexPagination + 3, "+")} tag="button">
+                                                {indexPagination + 3}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    }
+                                    <PaginationItem>
+                                        <PaginationLink next tag="button" />
+                                    </PaginationItem>
+                                </Pagination>
+                            </div>
+                        </Col>
+                    }
                 </Row>
             </div>
         );

@@ -37,19 +37,19 @@ function ModalInfo(props) {
             <tbody>
               <tr>
                 <td style={{ width: "200px" }}>Công nghệ màn hình</td>
-                <td>{productDetail.screen.screenTechnology}</td>
+                <td>{productDetail.screen ? productDetail.screen.screenTechnology : ""}</td>
               </tr>
               <tr>
                 <td>Độ phân giải</td>
-                <td>{productDetail.screen.resolution}</td>
+                <td>{productDetail.screen ? productDetail.screen.resolution : ""}</td>
               </tr>
               <tr>
                 <td>Màn hình rộng</td>
-                <td>{productDetail.screen.size}</td>
+                <td>{productDetail.screen ? productDetail.screen.size : ""}</td>
               </tr>
               <tr>
                 <td>Mặt kính cảm ứng</td>
-                <td>{productDetail.screen.touchScreen}</td>
+                <td>{productDetail.screen ? productDetail.screen.touchScreen : ""}</td>
               </tr>
             </tbody>
           </Table>
@@ -59,15 +59,15 @@ function ModalInfo(props) {
             <tbody>
               <tr>
                 <td style={{ width: "200px" }}>Độ phân giải</td>
-                <td>{productDetail.mainCamera.resolution}</td>
+                <td>{productDetail.mainCamera ? productDetail.mainCamera.resolution : ""}</td>
               </tr>
               <tr>
                 <td>Quay phim</td>
-                <td>{productDetail.mainCamera.video}</td>
+                <td>{productDetail.mainCamera ? productDetail.mainCamera.video : ""}</td>
               </tr>
               <tr>
                 <td>Đèn Flash</td>
-                <td>{productDetail.mainCamera.flash ? "Có" : "Không"}</td>
+                <td>{productDetail.mainCamera ? productDetail.mainCamera.flash ? "Có" : "Không" : ""}</td>
               </tr>
             </tbody>
           </Table>
@@ -77,11 +77,11 @@ function ModalInfo(props) {
             <tbody>
               <tr>
                 <td style={{ width: "200px" }}>Độ phân giải</td>
-                <td>{productDetail.selfieCamera.resolution}</td>
+                <td>{productDetail.selfieCamera ? productDetail.selfieCamera.resolution : ""}</td>
               </tr>
               <tr>
                 <td>Quay phim</td>
-                <td>{productDetail.selfieCamera.video}</td>
+                <td>{productDetail.selfieCamera ? productDetail.selfieCamera.video : ""}</td>
               </tr>
             </tbody>
           </Table>
@@ -91,19 +91,19 @@ function ModalInfo(props) {
             <tbody>
               <tr>
                 <td style={{ width: "200px" }}>Hệ điều hành</td>
-                <td>{productDetail.platform.os}</td>
+                <td>{productDetail.platform ? productDetail.platform.os : ""}</td>
               </tr>
               <tr>
                 <td>Chipset (hãng SX CPU)</td>
-                <td>{productDetail.platform.chipset}</td>
+                <td>{productDetail.platform ? productDetail.platform.chipset : ""}</td>
               </tr>
               <tr>
                 <td>Tốc độ CPU</td>
-                <td>{productDetail.platform.cpu}</td>
+                <td>{productDetail.platform ? productDetail.platform.cpu : ""}</td>
               </tr>
               <tr>
                 <td>Chip đồ họa (GPU)</td>
-                <td>{productDetail.platform.gpu}</td>
+                <td>{productDetail.platform ? productDetail.platform.gpu : ""}</td>
               </tr>
             </tbody>
           </Table>
@@ -113,15 +113,15 @@ function ModalInfo(props) {
             <tbody>
               <tr>
                 <td style={{ width: "200px" }}>RAM</td>
-                <td>{productDetail.memory.ram}</td>
+                <td>{productDetail.memory ? productDetail.memory.ram : ""}</td>
               </tr>
               <tr>
                 <td>Bộ nhớ trong</td>
-                <td>{productDetail.memory.rom}</td>
+                <td>{productDetail.memory ? productDetail.memory.rom : ""}</td>
               </tr>
               <tr>
                 <td>TThẻ nhớ ngoài</td>
-                <td>{productDetail.memory.cardSlot}</td>
+                <td>{productDetail.memory ? productDetail.memory.cardSlot : ""}</td>
               </tr>
             </tbody>
           </Table>
@@ -131,23 +131,23 @@ function ModalInfo(props) {
             <tbody>
               <tr>
                 <td style={{ width: "200px" }}>SIM</td>
-                <td>{productDetail.comms.sim}</td>
+                <td>{productDetail.comms ? productDetail.comms.sim : ""}</td>
               </tr>
               <tr>
                 <td>Wifi</td>
-                <td>{productDetail.comms.wifi}</td>
+                <td>{productDetail.comms ? productDetail.comms.wifi : ""}</td>
               </tr>
               <tr>
                 <td>GPS</td>
-                <td>{productDetail.comms.gps}</td>
+                <td>{productDetail.comms ? productDetail.comms.gps : ""}</td>
               </tr>
               <tr>
                 <td>Bluetooth</td>
-                <td>{productDetail.comms.bluetooth}</td>
+                <td>{productDetail.comms ? productDetail.comms.bluetooth : ""}</td>
               </tr>
               <tr>
                 <td>Jack tai nghe</td>
-                <td>{productDetail.comms.jack}</td>
+                <td>{productDetail.comms ? productDetail.comms.jack : ""}</td>
               </tr>
             </tbody>
           </Table>
@@ -157,15 +157,15 @@ function ModalInfo(props) {
             <tbody>
               <tr>
                 <td style={{ width: "200px" }}>Thiết kế</td>
-                <td>{productDetail.body.build}</td>
+                <td>{productDetail.body ? productDetail.body.build : ""}</td>
               </tr>
               <tr>
                 <td>Kích thước</td>
-                <td>{productDetail.body.dimensions}</td>
+                <td>{productDetail.body ? productDetail.body.dimensions : ""}</td>
               </tr>
               <tr>
                 <td>Trọng lượng</td>
-                <td>{productDetail.body.weight}</td>
+                <td>{productDetail.body ? productDetail.body.weight : ""}</td>
               </tr>
             </tbody>
           </Table>
@@ -175,11 +175,11 @@ function ModalInfo(props) {
             <tbody>
               <tr>
                 <td style={{ width: "200px" }}>Dung lượng pin</td>
-                <td>{productDetail.battery.capacity}</td>
+                <td>{productDetail.battery ? productDetail.battery.capacity : ""}</td>
               </tr>
               <tr>
                 <td>Loại pin</td>
-                <td>{productDetail.battery.type}</td>
+                <td>{productDetail.battery ? productDetail.battery.type : ""}</td>
               </tr>
             </tbody>
           </Table>

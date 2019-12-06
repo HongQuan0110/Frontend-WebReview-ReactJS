@@ -2,11 +2,13 @@ import React from 'react';
 
 const Home = React.lazy(() => import('./Pages/Home/Home.page'));
 const Phone = React.lazy(() => import('./Pages/Phone/Phone.page'));
-const PhoneSettings = React.lazy(() => import('./Pages/PhoneSettings/phoneSettings.page'))
+const PhoneSettings = React.lazy(() => import('./Pages/PhoneSettings/phoneSettings.page'));
+const PhonePage = React.lazy(() => import('./Pages/PhonePage/PhonePage.page'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'trangchu', component:  Home},
+  { path: '/dien-thoai', exact: true, name: 'dien-thoai', component: PhonePage},
   { path: '/dien-thoai/:id', exact: true, name: 'dien-thoai-id', component: Phone},
   { path: '/them', exact: true, name: 'them', component:  PhoneSettings}
   // { path: '/dashboard', exact: true, name: 'Dashboard', component: Dashboard },

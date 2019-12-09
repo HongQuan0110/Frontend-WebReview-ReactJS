@@ -122,3 +122,9 @@
     max-height: 170px;
     overflow: auto;
 }
+
+/* page profile */
+#avatar{
+    max-width: 300px;
+    max-height: 300px;
+}

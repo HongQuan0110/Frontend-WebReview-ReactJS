@@ -9,3 +9,12 @@ export const uploadFile = (file) => {
             .then(res => res)
             .catch(err => {})
 }
+
+export const uploadAvatar = (file) => {
+    let formData = new FormData();
+    formData.append("avatar", file)
+
+    return requestHelper.post(`${appConfig.apiUrl}/avatar`, formData)
+            .then(res => res)
+            .catch(err => {})
+}

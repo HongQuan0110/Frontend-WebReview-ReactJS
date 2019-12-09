@@ -9,6 +9,7 @@ import {
 
 import { connect } from "react-redux";
 import { FormattedNumber } from "react-intl";
+import { Redirect } from "react-router-dom";
 
 import { appConfig } from "../../configs/app.config";
 import { getProducts } from "../../actions/phone.action";
@@ -348,9 +349,13 @@ class PhoneSettings extends Component {
 
     render() {
         const { isOpenModal, phoneItem, title, isShowModalConfirm, isOpenDropdownLabel, label, params, isOpenDropdownSort, indexPagination, limit_products } = this.state;
-        const { data } = this.props;
+        const { data, user } = this.props;
         const { phoneList, phoneTotal } = data;
         const currentList = phoneList ? phoneList.length : 0;
+        console.log(user)
+        if (user && user.role != 1){
+            return <Redirect from="/" to="/" />
+        }
         return (
             <div>
                 <ModalConfirm
@@ -751,7 +756,8 @@ class PhoneSettings extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        data: state.phoneList
+        data: state.phoneList,
+        user: state.auth.user
     }
 }
 

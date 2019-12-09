@@ -44,12 +44,15 @@ class DefaultHeader extends Component {
           <NavItem className="px-3">
             <Link to="/dien-thoai" className="nav-link">Điện thoại</Link>
           </NavItem>
-          <NavItem className="px-3">
-            <NavLink to="/them" className="nav-link">Settings</NavLink>
-          </NavItem>
+          {
+            user && user.role === 1 && 
+            <NavItem className="px-3">
+              <NavLink to="/them" className="nav-link">Cài đặt</NavLink>
+            </NavItem>
+          }
         </Nav>
         <Nav className="ml-auto" navbar>
-          <NavItem className="d-md-down-none">
+          {/* <NavItem className="d-md-down-none">
             <NavLink to="#" className="nav-link"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
           </NavItem>
           <NavItem className="d-md-down-none">
@@ -57,21 +60,25 @@ class DefaultHeader extends Component {
           </NavItem>
           <NavItem className="d-md-down-none">
             <NavLink to="#" className="nav-link"><i className="icon-location-pin"></i></NavLink>
-          </NavItem>
+          </NavItem> */}
 
           {
             user && user.msg === "Token không hợp lệ" && 
             <div>
-              <Button onClick={login} type="button" outline color="primary"><i className="fa fa-user "></i>  Đăng nhập</Button>
+              <Button className="mr-4" onClick={login} type="button" outline color="primary"><i className="fa fa-user "></i>  Đăng nhập</Button>
             </div>
           }
           {
             user && user._id && 
 
-          <UncontrolledDropdown nav direction="down">
-            <DropdownToggle nav>
+          <UncontrolledDropdown className="mr-5 d-flex align-items-center" nav direction="down">
+           
+            <DropdownToggle nav className="dropdown-user">
               <img src={user.avatar ? `${appConfig.apiAvatar}/${user.avatar}` : `${appConfig.defaultAvatar}`} className="img-avatar" alt="" />
+              <span className="showUsername mr-1" >{user.username}</span>
+              <i className="fa fa-chevron-circle-down showUsername icon-dropdown"></i>
             </DropdownToggle>
+            
             <DropdownMenu right>
               <DropdownItem onClick={profile} ><i className="fa fa-user"></i> Thông tin</DropdownItem>
               <DropdownItem onClick={changePassword}><i className="fa fa-key"></i> Đổi mật khẩu</DropdownItem>
@@ -79,11 +86,13 @@ class DefaultHeader extends Component {
               <DropdownItem divider />
               <DropdownItem onClick={e => this.props.onLogout(e)}><i className="fa fa-lock"></i> Logout</DropdownItem>
             </DropdownMenu>
+            
           </UncontrolledDropdown>
+          
           }
         </Nav>
-        <AppAsideToggler className="d-md-down-none" />
-        {/*<AppAsideToggler className="d-lg-none" mobile />*/}
+        {/* <AppAsideToggler className="d-md-down-none" />
+        <AppAsideToggler className="d-lg-none" mobile /> */}
       </React.Fragment>
     );
   }

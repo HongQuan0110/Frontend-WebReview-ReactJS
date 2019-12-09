@@ -22,4 +22,8 @@ export default class Auth{
     static updatePassword(params){
         return requestHelper.put(`${appConfig.apiUrl}/password`, params);
     }
+
+    static register(user){
+        return requestHelper.post(`${appConfig.apiUrl}/register`, user);
+    }
 }

@@ -87,7 +87,7 @@ class Profile extends Component {
         const { user } = this.props;
         const { profile } = this.state;
         console.log(profile);
-        if (user.result === false){
+        if (user && user.result === false){
             return <Redirect from="/" to="/" />
         }
         if (user && Object.keys(profile).length === 0) {

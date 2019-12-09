@@ -128,3 +128,17 @@
     max-width: 300px;
     max-height: 300px;
 }
+
+/* header */
+.showUsername{
+    color: #64bde3;
+    font-size: medium;
+}
+
+.icon-dropdown{
+    opacity: 0.7;
+}
+
+.dropdown-user:hover .icon-dropdown{
+    opacity: 1;
+}

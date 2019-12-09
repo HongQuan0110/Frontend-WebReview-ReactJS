@@ -178,6 +178,7 @@ class Phone extends Component {
         const {doughnut, options, isOpenModal, comment, listSore, nodeScore} = this.state;
         const { phoneInfo, user} = this.props;
         const {phone} = phoneInfo;
+        console.log(this.props.match)
         return (
             <div >
                 {

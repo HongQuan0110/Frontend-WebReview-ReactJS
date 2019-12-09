@@ -106,7 +106,7 @@ class PhonePage extends Component {
     render() {
         const { isOpenDropdownLabel, label, params, isOpenDropdownSort, indexPagination, limit_products } = this.state;
         const { data } = this.props;
-        const { phoneList, phoneTotal } = data;
+        const { phoneList, phoneTotal, comments } = data;
         const currentList = phoneList ? phoneList.length : 0;
         return (
             <div>
@@ -152,7 +152,8 @@ class PhonePage extends Component {
                                 <img className="image-hover" alt="" height="250" width="auto" src={`${appConfig.apiProductImage}/${val.image ? val.image : 'default-phone.png'}`} ></img>
                             </NavLink>
                             <h6 className="pt-2">{val.name.length > 30 ? val.name.slice(0, 28) + "..." : val.name}</h6>
-                            <span><FormattedNumber value={val.price} /></span>
+                            <span className="text-danger"><FormattedNumber value={val.price}/> đ</span>
+                            <p>{val.commentAmount} bình luận</p>
                         </Col>
                     )}
                 </Row>

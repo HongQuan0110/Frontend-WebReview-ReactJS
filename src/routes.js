@@ -4,13 +4,17 @@ const Home = React.lazy(() => import('./Pages/Home/Home.page'));
 const Phone = React.lazy(() => import('./Pages/Phone/Phone.page'));
 const PhoneSettings = React.lazy(() => import('./Pages/PhoneSettings/phoneSettings.page'));
 const PhonePage = React.lazy(() => import('./Pages/PhonePage/PhonePage.page'));
+const ProfilePage = React.lazy(() => import('./Pages/Profile/Profile.page'));
+const PasswordPage = React.lazy(() => import('./Pages/Password/Password.page'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'trangchu', component:  Home},
   { path: '/dien-thoai', exact: true, name: 'dien-thoai', component: PhonePage},
   { path: '/dien-thoai/:id', exact: true, name: 'dien-thoai-id', component: Phone},
-  { path: '/them', exact: true, name: 'them', component:  PhoneSettings}
+  { path: '/them', exact: true, name: 'them', component:  PhoneSettings},
+  { path: '/thong-tin', exact: true, name: 'thong-tin', component:  ProfilePage},
+  { path: '/mat-khau', exact: true, name: 'mat-khau', component:  PasswordPage},
   // { path: '/dashboard', exact: true, name: 'Dashboard', component: Dashboard },
   // { path: '/theme', exact: true, name: 'Theme', component: Colors },
   // { path: '/theme/colors', name: 'Colors', component: Colors },

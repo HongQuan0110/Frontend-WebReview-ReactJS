@@ -21,7 +21,9 @@ const ProductsReducer = (state = initProduct, action) => {
                 loading: false,
                 failed: false,
                 phoneList: action.data.products,
-                phoneTotal: action.data.productNumber
+                phoneTotal: action.data.productNumber,
+                // comments: action.data.comments,
+                phonetByComment: action.data.productByComment
             });
         }
 

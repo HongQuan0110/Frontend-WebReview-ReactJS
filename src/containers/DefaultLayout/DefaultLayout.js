@@ -21,6 +21,7 @@ import {
 import navigation from '../../_nav';
 // routes config
 import routes from '../../routes';
+import cookie from "react-cookies";
 
 import "../../../src/index.css"
 
@@ -34,13 +35,27 @@ class DefaultLayout extends Component {
 
   signOut(e) {
     e.preventDefault()
-    this.props.history.push('/login')
+    // this.props.history.push('/login')
+    // document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; ";
+    cookie.remove('token')
+    this.props.getProfileUser();
   }
 
   componentDidMount() {
     this.props.getProfileUser();
   }
   
+  login = () => {
+    this.props.history.push("/login", this.props.history.location.pathname);
+  }
+
+  profile = () => {
+    this.props.history.push("/thong-tin");
+  }
+
+  changePassword = () => {
+    this.props.history.push("/mat-khau");
+  }
 
   render() {
     const {user} = this.props;
@@ -49,7 +64,7 @@ class DefaultLayout extends Component {
       <div className="app">
         <AppHeader fixed>
           <Suspense  fallback={this.loading()}>
-            <DefaultHeader onLogout={e=>this.signOut(e)} user={user} />
+            <DefaultHeader profile={this.profile} changePassword={this.changePassword} login={this.login}  onLogout={e=>this.signOut(e)} user={user} />
           </Suspense>
         </AppHeader>
         <div className="app-body">
@@ -79,7 +94,7 @@ class DefaultLayout extends Component {
                         )} />
                     ) : (null);
                   })}
-                  {/* <Redirect from="/" to="/dashboard" /> */}
+                  <Redirect from="/" to="/" />
                 </Switch>
               </Suspense>
             </Container>

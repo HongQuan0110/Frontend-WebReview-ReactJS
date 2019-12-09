@@ -44,7 +44,6 @@ class Login extends Component {
 
   render() {
     const {email, password} = this.state;
-    console.log(this.state, this.props)
     return (
       <div className="app flex-row align-items-center">
         <Container>

@@ -4,7 +4,7 @@ import { Card, CardHeader, CardBody, CardFooter,
     Input, Label, Col, FormGroup, Row, Button, Form
 } from "reactstrap";
 import { toast } from 'react-toastify';
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 import authApi from "../../api/auth.api";
 
@@ -75,7 +75,7 @@ class Password extends Component {
     render() {
         const { item } = this.state;
         const { user } = this.props;
-        if (user.result === false){
+        if (user && user.result === false){
             return <Redirect from="/" to="/" />
         }
         return (

@@ -145,7 +145,7 @@ class Dashboard extends Component {
           <CarouselControl direction="next" directionText="Next" onClickHandler={this.nextMostComment} />
         </Carousel>
         
-        <h3 className="text-primary border-bottom d-flex align-items-center pt-2">Quan tâm nhất</h3>
+        {/* <h3 className="text-primary border-bottom d-flex align-items-center pt-2">Quan tâm nhất</h3>
         <Row>
           <Col className="" xs="12" sm="6" lg="3">
             <NavLink to="/dien-thoai/123">
@@ -164,7 +164,7 @@ class Dashboard extends Component {
 
           <Col xs="12" sm="6" lg="3">.col</Col>
           <Col xs="12" sm="6" lg="3">.col</Col>
-        </Row>
+        </Row> */}
         
       </div>
     );

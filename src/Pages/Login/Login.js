@@ -55,15 +55,14 @@ class Login extends Component {
                     <Form onSubmit={e => this.onSubmit(e)}
                       ref={c => this.form = c}
                     >
-                      <h1>Login</h1>
-                      <p className="text-muted">Sign In to your account</p>
+                      <h1>Đăng nhập</h1>
                       <InputGroup className="mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
                             <i className="icon-user"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="email" name="email" placeholder="email" autoComplete="email" 
+                        <Input type="email" name="email" placeholder="Email" autoComplete="email" 
                           onChange={e => this.onChange(e)}
                           value={email}
                         />
@@ -74,17 +73,17 @@ class Login extends Component {
                             <i className="icon-lock"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="password" name="password" placeholder="Password" autoComplete="current-password"
+                        <Input type="password" name="password" placeholder="Mật khẩu" autoComplete="current-password"
                            onChange={e => this.onChange(e)}
                            value={password}
                         />
                       </InputGroup>
                       <Row>
                         <Col xs="6">
-                          <Button type="submit" color="primary" className="px-4">Login</Button>
+                          <Button type="submit" color="primary" className="px-4">Đăng nhập</Button>
                         </Col>
                         <Col xs="6" className="text-right">
-                          <Button color="link" className="px-0">Forgot password?</Button>
+                          <Button type="button" color="link" className="px-0">Quên mật khẩu?</Button>
                         </Col>
                       </Row>
                     </Form>
@@ -93,11 +92,10 @@ class Login extends Component {
                 <Card className="text-white bg-primary py-5 d-md-down-none" style={{ width: '44%' }}>
                   <CardBody className="text-center">
                     <div>
-                      <h2>Sign up</h2>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua.</p>
+                      <h2>Đăng ký</h2>
+                      <p>Đăng ký tài khoản để tham gia đánh giá sản phẩm.</p>
                       <Link to="/register">
-                        <Button color="primary" className="mt-3" active tabIndex={-1}>Register Now!</Button>
+                        <Button color="primary" className="mt-3" active tabIndex={-1}>Đăng ký ngay!</Button>
                       </Link>
                     </div>
                   </CardBody>

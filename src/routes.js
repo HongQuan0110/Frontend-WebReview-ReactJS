@@ -12,7 +12,7 @@ const routes = [
   { path: '/', exact: true, name: 'trangchu', component:  Home},
   { path: '/dien-thoai', exact: true, name: 'dien-thoai', component: PhonePage},
   { path: '/dien-thoai/:id', exact: true, name: 'dien-thoai-id', component: Phone},
-  { path: '/them', exact: true, name: 'them', component:  PhoneSettings},
+  { path: '/cai-dat', exact: true, name: 'them', component:  PhoneSettings},
   { path: '/thong-tin', exact: true, name: 'thong-tin', component:  ProfilePage},
   { path: '/mat-khau', exact: true, name: 'mat-khau', component:  PasswordPage},
   // { path: '/dashboard', exact: true, name: 'Dashboard', component: Dashboard },

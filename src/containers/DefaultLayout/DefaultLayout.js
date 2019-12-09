@@ -19,6 +19,7 @@ import {
 } from '@coreui/react';
 // sidebar nav config
 import navigation from '../../_nav';
+import { navAdmin, navMember } from "../../_mynav";
 // routes config
 import routes from '../../routes';
 import cookie from "react-cookies";
@@ -72,7 +73,7 @@ class DefaultLayout extends Component {
             <AppSidebarHeader />
             <AppSidebarForm />
             <Suspense>
-            <AppSidebarNav navConfig={navigation} {...this.props} router={router}/>
+            <AppSidebarNav navConfig={user ? user.result === false ? navMember : navAdmin : {items: []}} {...this.props} router={router}/>
             </Suspense>
             <AppSidebarFooter />
             <AppSidebarMinimizer />

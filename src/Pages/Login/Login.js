@@ -27,6 +27,7 @@ class Login extends Component {
     e.preventDefault();
     const {email, password} = this.state;
     const token = await Auth.Login(email, password);
+    console.log(token)
     if(token.msg) {
       toast.error(token.msg)
     }

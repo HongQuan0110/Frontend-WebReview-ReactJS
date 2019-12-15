@@ -31,8 +31,8 @@ export const navAdmin = {
         icon: "cui-phone"
       },
       {
-        name: "Cài đặt",
-        url: "/cai-dat",
+        name: "Quản lý điện thoại",
+        url: "/quanlydienthoai",
         icon: "cui-settings"
       },
     //   {

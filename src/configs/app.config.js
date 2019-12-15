@@ -1,7 +1,15 @@
+// export const appConfig = {
+//     apiUrl: "https://webappnodeapi.azurewebsites.net",
+//     apiAnalysis: "https://dockerdjangoapi.herokuapp.com",
+//     apiProductImage: "https://webappnodeapi.azurewebsites.net/images/product",
+//     apiAvatar: "https://webappnodeapi.azurewebsites.net/images/avatar",
+//     defaultAvatar: "https://webappnodeapi.azurewebsites.net/images/avatar/avatar-default.png"
+// }
+
 export const appConfig = {
-    apiUrl: "https://dockernodeapi.herokuapp.com",
+    apiUrl: "http://localhost:3001",
     apiAnalysis: "https://dockerdjangoapi.herokuapp.com",
-    apiProductImage: "https://dockernodeapi.herokuapp.com/images/product",
-    apiAvatar: "https://dockernodeapi.herokuapp.com/images/avatar",
-    defaultAvatar: "https://dockernodeapi.herokuapp.com/images/avatar/avatar-default.png"
+    apiProductImage: "http://localhost:3001/images/product",
+    apiAvatar: "http://localhost:3001/images/avatar",
+    defaultAvatar: "http://localhost:3001/images/avatar/avatar-default.png"
 }

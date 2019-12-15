@@ -46,9 +46,14 @@ class DefaultHeader extends Component {
           </NavItem>
           {
             user && user.role === 1 && 
-            <NavItem className="px-3">
-              <NavLink to="/them" className="nav-link">Cài đặt</NavLink>
-            </NavItem>
+            <React.Fragment>
+              <NavItem className="px-3">
+                <NavLink to="/nhan-hieu" className="nav-link">Nhãn hiệu điện thoại</NavLink>
+              </NavItem>
+              <NavItem className="px-3">
+                <NavLink to="/quanlydienthoai" className="nav-link">Quản lý điện thoại</NavLink>
+              </NavItem>
+            </React.Fragment>
           }
         </Nav>
         <Nav className="ml-auto" navbar>

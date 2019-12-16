@@ -7,7 +7,7 @@ const PhonePage = React.lazy(() => import('./Pages/PhonePage/PhonePage.page'));
 const ProfilePage = React.lazy(() => import('./Pages/Profile/Profile.page'));
 const PasswordPage = React.lazy(() => import('./Pages/Password/Password.page'));
 const PhoneLabel = React.lazy(() => import('./Pages/PhoneLabel/PhoneLabel.page'));
-
+const User = React.lazy(() => import('./Pages/Users/User.page'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -18,6 +18,7 @@ const routes = [
   { path: '/thong-tin', exact: true, name: 'thong-tin', component:  ProfilePage},
   { path: '/mat-khau', exact: true, name: 'mat-khau', component:  PasswordPage},
   { path: '/nhan-hieu', exact: true, name: 'nhan-hieu', component:  PhoneLabel},
+  { path: '/nguoi-dung', exact: true, name: 'nguoi-dung', component:  User},
   // { path: '/dashboard', exact: true, name: 'Dashboard', component: Dashboard },
   // { path: '/theme', exact: true, name: 'Theme', component: Colors },
   // { path: '/theme/colors', name: 'Colors', component: Colors },

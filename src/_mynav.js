@@ -31,9 +31,19 @@ export const navAdmin = {
         icon: "cui-phone"
       },
       {
+        name: "Nhãn hiệu điện thoại",
+        url: "/nhan-hieu",
+        icon: "cui-info"
+      },
+      {
         name: "Quản lý điện thoại",
         url: "/quanlydienthoai",
         icon: "cui-settings"
+      },
+      {
+        name: "Quản lý người dùng",
+        url: "/nguoi-dung",
+        icon: "cui-user"
       },
     //   {
     //     name: "Thông tin tài khoản",

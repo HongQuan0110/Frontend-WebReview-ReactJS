@@ -13,7 +13,7 @@ function* getLabel(action){
         let labels = yield LabelApi.getLabel(action.params);
         yield put(getLabelListSuccess(labels));
     } catch (error) {
-        yield put(getLabelListFailed());
+        yield put(getLabelListFailed(error));
     }
 }
 

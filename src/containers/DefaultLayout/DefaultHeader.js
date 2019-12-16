@@ -53,6 +53,9 @@ class DefaultHeader extends Component {
               <NavItem className="px-3">
                 <NavLink to="/quanlydienthoai" className="nav-link">Quản lý điện thoại</NavLink>
               </NavItem>
+              <NavItem className="px-3">
+                <NavLink to="/nguoi-dung" className="nav-link">Quản lý người dùng</NavLink>
+              </NavItem>
             </React.Fragment>
           }
         </Nav>

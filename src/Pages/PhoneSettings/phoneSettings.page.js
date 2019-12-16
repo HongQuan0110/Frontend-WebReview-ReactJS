@@ -13,6 +13,7 @@ import { Redirect } from "react-router-dom";
 
 import { appConfig } from "../../configs/app.config";
 import { getProducts } from "../../actions/phone.action";
+import { getLabelList } from "../../actions/label.action";
 import phoneApi from "../../api/phone.api";
 import Modal from "../../components/modals/modal";
 import ModalConfirm from "../../components/modals/modal.comfirm";
@@ -27,13 +28,10 @@ class PhoneSettings extends Component {
             isOpenDropdownSort: false,
             phoneItem: {
                 flash: true,
-                label: "iPhone"
             },
             params: {
                 skip: 0
             },
-            label: ["iPhone", "Samsung", "OPPO", "Xiaomi", "Realme", "Vivo", "Nokia", "VSmart",
-            "Huawei", "HONOR", "Masstel", "Itel", "BlackBerry", "mobell", "coolpad"],
             indexPagination: 0,
             limit_products: 8
         }
@@ -75,7 +73,7 @@ class PhoneSettings extends Component {
 
     showAddNew = () => {
         let title = "Thêm mới";
-        this.toggleModal(title, { flash: true, label: "iPhone" })
+        this.toggleModal(title, { flash: true })
     }
 
     savePhone = () => {
@@ -143,21 +141,16 @@ class PhoneSettings extends Component {
         const { image } = this.state.phoneItem;
         let phoneItem = Object.assign({}, this.state.phoneItem);
         console.log(phoneItem)
-        try {
-            let phone = this.handlePhoneData(phoneItem);
-            phone.image = await this.uploadImage(image);
-            console.log(phone.image)
-            await phoneApi.addPhone(phone);
-            this.setState({
-                phoneItem: {
-                    flash: true
-                }
-            })
-            this.props.getProducts();
-            this.toggleModal("", {})
-        } catch (error) {
-            console.log(error.message)
-        }
+        // try {
+        //     let phone = this.handlePhoneData(phoneItem);
+        //     phone.image = await this.uploadImage(image);
+        //     console.log(phone.image)
+        //     await phoneApi.addPhone(phone);
+        //     this.props.getProducts();
+        //     this.toggleModal("", {flash: true})
+        // } catch (error) {
+        //     console.log(error.message)
+        // }
     }
 
     updatePhone = async () => {
@@ -192,6 +185,7 @@ class PhoneSettings extends Component {
 
     componentDidMount() {
         this.props.getProducts();
+        this.props.getLabel();
     }
 
     onClickPhone = async (id) => {
@@ -301,9 +295,10 @@ class PhoneSettings extends Component {
         })
     }
 
-    onClickSelectLabel = (label) => {
+    onClickSelectLabel = (labelId, labelName) => {
         const {params} = this.state;
-        params.label = label;
+        params.label = labelId;
+        params.labelName = labelName;
         params.skip = 0;
         this.setState({
             params,
@@ -348,11 +343,10 @@ class PhoneSettings extends Component {
     }
 
     render() {
-        const { isOpenModal, phoneItem, title, isShowModalConfirm, isOpenDropdownLabel, label, params, isOpenDropdownSort, indexPagination, limit_products } = this.state;
-        const { data, user } = this.props;
+        const { isOpenModal, phoneItem, title, isShowModalConfirm, isOpenDropdownLabel, params, isOpenDropdownSort, indexPagination, limit_products } = this.state;
+        const { data, user, label } = this.props;
         const { phoneList, phoneTotal } = data;
         const currentList = phoneList ? phoneList.length : 0;
-        console.log(user)
         if (user && user.role != 1){
             return <Redirect from="/" to="/" />
         }
@@ -400,7 +394,8 @@ class PhoneSettings extends Component {
                                     <Input type="select" name="label" id="label"
                                         value={phoneItem.label} onChange={this.onHandleChange}
                                     >
-                                        {label.map((val, idx) => <option key={idx} value={val}>{val}</option>)}
+                                        <option >---</option>
+                                        {label && label.map((val, idx) => <option key={idx} value={val._id}>{val.name}</option>)}
                                         
                                     </Input>
                                 </Col>
@@ -682,12 +677,12 @@ class PhoneSettings extends Component {
 
                             <Dropdown  isOpen={isOpenDropdownLabel} toggle={this.toggleDropdownLabel}>
                                 <DropdownToggle caret>
-                                    {params.label ? params.label : "Tất cả"}
+                                    {params.labelName ? params.labelName : "Tất cả"}
                                 </DropdownToggle>
                                 <DropdownMenu className="">
                                     <DropdownItem onClick={e => this.onClickSelectLabel()}>Tất cả</DropdownItem>
-                                    {label.map((val, idx) => 
-                                        <DropdownItem onClick={e => this.onClickSelectLabel(val)} key={idx}>{val}</DropdownItem>)}
+                                    {label && label.map((val, idx) => 
+                                        <DropdownItem onClick={e => this.onClickSelectLabel(val._id, val.name)} key={idx}>{val.name}</DropdownItem>)}
                                 </DropdownMenu>
                             </Dropdown>
 
@@ -757,7 +752,8 @@ class PhoneSettings extends Component {
 const mapStateToProps = (state, ownProps) => {
     return {
         data: state.phoneList,
-        user: state.auth.user
+        user: state.auth.user,
+        label: state.labelList.labelList
     }
 }
 
@@ -765,6 +761,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         getProducts: (params) => {
             dispatch(getProducts(params))
+        },
+        getLabel: () => {
+            dispatch(getLabelList())
         }
     }
 }

@@ -8,6 +8,7 @@ import {
     Pagination, PaginationItem, PaginationLink
 } from 'reactstrap';
 import { toast } from "react-toastify";
+import { Redirect } from "react-router-dom";
 
 import Modal from "../../components/modals/modal";
 import ModalConfirm from "../../components/modals/modal.comfirm";
@@ -22,7 +23,8 @@ class PhoneLabel extends Component {
             isShowModalConfirm: false,
             isOpenDropdownSort: false,
             params: {
-                skip: 0
+                skip: 0,
+                limit: 5
             },
             labelItem: {
                 name: ""
@@ -83,26 +85,34 @@ class PhoneLabel extends Component {
     }
 
     addLabel = async () => {
-        let check = this.checkLabel();
-        if (check.result) {
-            await LabelApi.addLabel(check.labelItem);
-            let labelItem = {
-                name: ""
+        try {
+            let check = this.checkLabel();
+            if (check.result) {
+                await LabelApi.addLabel(check.labelItem);
+                let labelItem = {
+                    name: ""
+                }
+                this.props.getLabelList();
+                this.toggleModal("", labelItem);
             }
-            this.props.getLabelList();
-            this.toggleModal("", labelItem);
+        } catch (error) {
+            console.log(error)            
         }
     }
 
     updateLabel = async () => {
-        let check = this.checkLabel();
-        if (check.result) {
-            await LabelApi.updateLabel(check.labelItem);
-            let labelItem = {
-                name: ""
+        try {
+            let check = this.checkLabel();
+            if (check.result) {
+                await LabelApi.updateLabel(check.labelItem);
+                let labelItem = {
+                    name: ""
+                }
+                this.props.getLabelList(this.state.params);
+                this.toggleModal("", labelItem);
             }
-            this.props.getLabelList();
-            this.toggleModal("", labelItem);
+        } catch (error) {
+            console.log(error)            
         }
     }
 
@@ -196,14 +206,17 @@ class PhoneLabel extends Component {
     }
 
     componentDidMount() {
-        this.props.getLabelList()
+        this.props.getLabelList(this.state.params)
     }
 
     render() {
         const { isOpenModal, labelItem, title, isShowModalConfirm, params, isOpenDropdownSort, indexPagination, limit_labels } = this.state;
-        const { data } = this.props;
+        const { data, user } = this.props;
         const { labelList, labelTotal } = data;
         const currentList = labelList ? labelList.length : 0;
+        if (user && user.role != 1){
+            return <Redirect from="/" to="/" />
+        }
         return (
             <div>
                 <ModalConfirm
@@ -343,14 +356,15 @@ class PhoneLabel extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        data: state.labelList
+        data: state.labelList,
+        user: state.auth.user
     }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         getLabelList: (params) => {
-            dispatch(getLabelList(params))
+            dispatch(getLabelList({...params, limit: 5}))
         }
     }
 }

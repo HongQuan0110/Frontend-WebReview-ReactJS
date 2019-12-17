@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {
-    Button, Col, Row, Form, Table,
-    Label, Input, FormGroup, CardHeader,
+    Button, Col, Row, Table,
+    Input,
     InputGroup, InputGroupAddon,
     Dropdown, DropdownItem, DropdownMenu, DropdownToggle,
     Pagination, PaginationItem, PaginationLink
@@ -129,7 +129,7 @@ class User extends Component {
         const { data, user } = this.props;
         const { userList, userTotal } = data;
         const currentList = userList ? userList.length : 0;
-        if (user && user.role != 1){
+        if (user && user.role && user.role.index !== 1){
             return <Redirect from="/" to="/" />
         }
         return (

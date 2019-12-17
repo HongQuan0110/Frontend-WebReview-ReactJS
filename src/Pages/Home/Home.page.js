@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { Row, Col, Carousel, CarouselCaption, CarouselControl, CarouselIndicators, CarouselItem } from "reactstrap";
+import { Row, Col, Carousel, CarouselControl, CarouselItem } from "reactstrap";
 import { FormattedNumber } from "react-intl";
 import { NavLink } from "react-router-dom";
-import Score from "../../components/common/score";
-import axios from "axios";
 import { connect } from "react-redux";
 
 import {appConfig} from "../../configs/app.config";
@@ -17,10 +15,6 @@ class Dashboard extends Component {
       activeIndexMostComment: 0,
       lengthCarousel: 2
     };
-  }
-
-  componentDidMount(){
-    
   }
 
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>

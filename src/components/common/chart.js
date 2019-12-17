@@ -72,7 +72,6 @@ class Chart extends Component {
 
     componentWillReceiveProps(props){
         const {dataComments} = props
-        console.log('chart')
         let countPositive = 0;
         let countNegative = 0;
         let countNeutral = 0;

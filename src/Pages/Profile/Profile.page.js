@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Row, Col, Table, Button, Form, FormGroup, Label, Input,
+    Row, Col, Button, Form, FormGroup, Label, Input,
     Card, CardHeader, CardBody, CardFooter
 } from "reactstrap";
 import {Redirect} from "react-router-dom";
@@ -26,7 +26,6 @@ class Profile extends Component {
         const { profile } = this.state;
         let name = e.target.name;
         let value = e.target.value;
-        console.log(name, value, e.target.type)
         profile[name] = value;
 
         this.setState({
@@ -38,7 +37,6 @@ class Profile extends Component {
         let profile = Object.assign({}, this.state.profile);
         var name = event.target.name;
         var value = event.target.files[0];
-        console.log(value)
         
         if (value){
             profile[name] = value;
@@ -86,12 +84,10 @@ class Profile extends Component {
     render() {
         const { user } = this.props;
         const { profile } = this.state;
-        console.log(profile);
         if (user && user.result === false){
             return <Redirect from="/" to="/" />
         }
         if (user && Object.keys(profile).length === 0) {
-            console.log('here')
             profile.username = user.username;
             profile.age = user.age;
             profile.gender = user.gender;

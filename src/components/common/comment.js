@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { FormattedDate } from "react-intl";
 
 import { appConfig } from "../../configs/app.config";
-import Score from "./score";
 import Classify from "./classify"
 
 class Comment extends Component {
     render() {
-        const {sizeScore, user, comment} = this.props;
+        const { user, comment} = this.props;
         return (
             <div className="mb-4">
                 <div className="d-flex flex-rơw">

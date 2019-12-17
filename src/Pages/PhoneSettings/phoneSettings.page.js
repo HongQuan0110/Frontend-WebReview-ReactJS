@@ -133,24 +133,21 @@ class PhoneSettings extends Component {
             type: phoneItem.type ? phoneItem.type.trim() : phoneItem.type,
             capacity: phoneItem.capacity ? phoneItem.capacity.trim() : phoneItem.capacity
         }
-        console.log(phone)
         return phone;
     }
 
     addPhone = async () => {
         const { image } = this.state.phoneItem;
         let phoneItem = Object.assign({}, this.state.phoneItem);
-        console.log(phoneItem)
-        // try {
-        //     let phone = this.handlePhoneData(phoneItem);
-        //     phone.image = await this.uploadImage(image);
-        //     console.log(phone.image)
-        //     await phoneApi.addPhone(phone);
-        //     this.props.getProducts();
-        //     this.toggleModal("", {flash: true})
-        // } catch (error) {
-        //     console.log(error.message)
-        // }
+        try {
+            let phone = this.handlePhoneData(phoneItem);
+            phone.image = await this.uploadImage(image);
+            await phoneApi.addPhone(phone);
+            this.props.getProducts();
+            this.toggleModal("", {flash: true})
+        } catch (error) {
+            console.log(error.message)
+        }
     }
 
     updatePhone = async () => {
@@ -171,7 +168,6 @@ class PhoneSettings extends Component {
     uploadImage = async (image) => {
         try {
             let imageResult = await phoneApi.uploadFile(image);
-            console.log(imageResult);
             return imageResult.filename;
         } catch (error) {
             console.log(error.message);
@@ -192,7 +188,6 @@ class PhoneSettings extends Component {
         try {
             const { phoneItem } = this.state;
             let phoneResult = await phoneApi.getProductById(id);
-            console.log(phoneResult);
             phoneItem.id = id;
             phoneItem.name = phoneResult.product.name;
             phoneItem.label = phoneResult.product.label;
@@ -263,7 +258,6 @@ class PhoneSettings extends Component {
     deletePhone = async () => {
         try {
             const { id } = this.state.phoneItem;
-            console.log(id)
             await phoneApi.deleteProductById(id);
             this.props.getProducts();
             this.toggleDeleteModal();
@@ -284,12 +278,10 @@ class PhoneSettings extends Component {
 
     onClickSearch = () => {
         const { params } = this.state;
-        console.log(params)
         this.props.getProducts(params);
     }
 
     toggleDropdownLabel = () => {
-        console.log(123)
         this.setState({
             isOpenDropdownLabel: !this.state.isOpenDropdownLabel
         })
@@ -347,7 +339,7 @@ class PhoneSettings extends Component {
         const { data, user, label } = this.props;
         const { phoneList, phoneTotal } = data;
         const currentList = phoneList ? phoneList.length : 0;
-        if (user && user.role != 1){
+        if (user && user.role && user.role.index !== 1){
             return <Redirect from="/" to="/" />
         }
         return (

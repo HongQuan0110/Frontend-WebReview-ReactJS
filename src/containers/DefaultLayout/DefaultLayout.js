@@ -14,11 +14,11 @@ import {
   AppSidebarForm,
   AppSidebarHeader,
   AppSidebarMinimizer,
-  AppBreadcrumb2 as AppBreadcrumb,
+  // AppBreadcrumb2 as AppBreadcrumb,
   AppSidebarNav2 as AppSidebarNav,
 } from '@coreui/react';
 // sidebar nav config
-import navigation from '../../_nav';
+// import navigation from '../../_nav';
 import { navAdmin, navMember } from "../../_mynav";
 // routes config
 import routes from '../../routes';
@@ -60,7 +60,6 @@ class DefaultLayout extends Component {
 
   render() {
     const {user} = this.props;
-    console.log(user);
     return (
       <div className="app">
         <AppHeader fixed>
@@ -73,7 +72,7 @@ class DefaultLayout extends Component {
             <AppSidebarHeader />
             <AppSidebarForm />
             <Suspense>
-            <AppSidebarNav navConfig={user ? user.result === false ? navMember : navAdmin : {items: []}} {...this.props} router={router}/>
+            <AppSidebarNav navConfig={user ? user.role.index === 1 ? navAdmin : navMember : {items: []}} {...this.props} router={router}/>
             </Suspense>
             <AppSidebarFooter />
             <AppSidebarMinimizer />

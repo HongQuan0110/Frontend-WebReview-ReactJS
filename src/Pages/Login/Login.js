@@ -27,16 +27,14 @@ class Login extends Component {
     e.preventDefault();
     const {email, password} = this.state;
     const token = await Auth.Login(email, password);
-    console.log(token)
+    // console.log(token)
     if(token.msg) {
       toast.error(token.msg)
     }
     else{
       cookie.save("token", token);
       const url = this.props.location.state;
-      console.log(url)
       if (url){
-        console.log(true)
         return this.props.history.push(url);
       }
       return this.props.history.push("/")

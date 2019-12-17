@@ -3,7 +3,7 @@
   "version": "2.6.0",
   "description": "CoreUI React Open Source Bootstrap 4 Admin Template",
   "author": "Łukasz Holeczek",
-  "homepage": "https://coreui.io",
+  "homepage": "http://hongquan0110.github.io/",
   "copyright": "Copyright 2017-2019 creativeLabs Łukasz Holeczek",
   "license": "MIT",
   "private": true,
@@ -25,6 +25,7 @@
     "enzyme-adapter-react-16": "^1.14.0",
     "flag-icon-css": "^3.3.0",
     "font-awesome": "^4.7.0",
+    "gh-pages": "^2.1.1",
     "node-sass": "^4.12.0",
     "prop-types": "^15.7.2",
     "qs": "^6.9.1",
@@ -48,6 +49,8 @@
     "react-scripts": "^3.0.1"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

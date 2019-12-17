@@ -40,8 +40,9 @@ export const getProductsSuccess = (products) => {
     }
 }
 
-export const getProductsFailed = () => {
+export const getProductsFailed = (err) => {
     return {
-        type: GET_PRODUCTS_FAILED
+        type: GET_PRODUCTS_FAILED,
+        err
     }
 }

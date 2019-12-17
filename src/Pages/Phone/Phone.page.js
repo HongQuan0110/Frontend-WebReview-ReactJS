@@ -1,13 +1,11 @@
 import { connect } from "react-redux";
 import React, { Component } from 'react';
-import { Row, Col, Table, Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { Row, Col, Table, Button, Form, FormGroup, Input } from "reactstrap";
 import { toast } from "react-toastify";
-import { Doughnut } from 'react-chartjs-2';
 import CommentApi from "../../api/comment.api";
 import { appConfig } from "../../configs/app.config";
 import { getProductById } from "../../actions/phone.action";
 import Comment from "../../components/common/comment";
-import Score from '../../components/common/score';
 import Modal from "../../components/modals/modal.info";
 import Chart from "../../components/common/chart";
 
@@ -83,7 +81,6 @@ class Phone extends Component {
         // }
         else{
             let kq = await CommentApi.SentimentAnalysis(comment.content);
-            console.log(comment);
             if (kq){
                 comment.analysis = kq[0]
                 await CommentApi.AddComment(comment);
@@ -175,10 +172,9 @@ class Phone extends Component {
     
 
     render() {
-        const {doughnut, options, isOpenModal, comment, listSore, nodeScore} = this.state;
-        const { phoneInfo, user} = this.props;
+        const { isOpenModal, comment } = this.state;
+        const { phoneInfo} = this.props;
         const {phone} = phoneInfo;
-        console.log(this.props.match)
         return (
             <div >
                 {

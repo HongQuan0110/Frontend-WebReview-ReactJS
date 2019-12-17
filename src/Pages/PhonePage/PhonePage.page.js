@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Button, Col, Row,
-    Label, Input,
+    Button, Col, Row, Input,
     InputGroup, InputGroupAddon,
     Dropdown, DropdownItem, DropdownMenu, DropdownToggle,
     Pagination, PaginationItem, PaginationLink
@@ -12,7 +11,6 @@ import { FormattedNumber } from "react-intl";
 
 import { appConfig } from "../../configs/app.config";
 import { getProducts } from "../../actions/phone.action";
-import phoneApi from "../../api/phone.api";
 
 class PhonePage extends Component {
     constructor(props) {
@@ -106,7 +104,7 @@ class PhonePage extends Component {
     render() {
         const { isOpenDropdownLabel, label, params, isOpenDropdownSort, indexPagination, limit_products } = this.state;
         const { data } = this.props;
-        const { phoneList, phoneTotal, comments } = data;
+        const { phoneList, phoneTotal } = data;
         const currentList = phoneList ? phoneList.length : 0;
         return (
             <div>

@@ -10,7 +10,7 @@ class Classify extends Component {
     }
 
     componentDidMount() {
-        const {children, select} = this.props;
+        const {children} = this.props;
         if (children === "tích cực"){
             this.setState({
                 background: "bg-Hight-Score"

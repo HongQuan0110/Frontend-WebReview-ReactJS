@@ -1,4 +1,4 @@
-import { call, put, takeLatest, takeEvery } from "redux-saga/effects";
+import { call, put, takeEvery } from "redux-saga/effects";
 
 import { getProductByIdSuccess, getProductByIdFailed, getProductsSuccess, getProductsFailed } from "../actions/phone.action";
 import ProductApi from "../api/phone.api";
@@ -15,7 +15,7 @@ function* getProductById(action){
 
 function* getProducts(action){
     try {
-        console.log(action)
+        // console.log(action)
         const products = yield call(ProductApi.getProducts, action.params);
         yield put(getProductsSuccess(products));
     } catch (error) {

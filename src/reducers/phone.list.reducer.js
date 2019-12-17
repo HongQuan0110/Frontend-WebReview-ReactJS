@@ -2,7 +2,6 @@ import {
     GET_PRODUCTS,
     GET_PRODUCTS_SUCCESS,
     GET_PRODUCTS_FAILED,
-    GET_PRODUCT_BY_ID_FAILED
 } from "../actions/phone.action"
 
 const initProduct = {}
@@ -27,7 +26,7 @@ const ProductsReducer = (state = initProduct, action) => {
             });
         }
 
-        case GET_PRODUCT_BY_ID_FAILED: {
+        case GET_PRODUCTS_FAILED: {
             return Object.assign({}, state, {
                 loading: true,
                 failed: true

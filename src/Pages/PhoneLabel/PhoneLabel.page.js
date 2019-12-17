@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {
     Button, Col, Row, Form, Table,
-    Label, Input, FormGroup, CardHeader,
+    Label, Input, FormGroup,
     InputGroup, InputGroupAddon,
     Dropdown, DropdownItem, DropdownMenu, DropdownToggle,
     Pagination, PaginationItem, PaginationLink
@@ -73,7 +73,7 @@ class PhoneLabel extends Component {
         let repeatLabel = labelList.every((label) => {
             return label.name.toLowerCase() !== labelItem.name.toLowerCase()
         })
-        if (labelItem.name.length == 0) {
+        if (labelItem.name.length === 0) {
             toast.error("Bạn phải nhập hãng sản xuất");
             return { result: false, labelItem };
         }
@@ -214,7 +214,7 @@ class PhoneLabel extends Component {
         const { data, user } = this.props;
         const { labelList, labelTotal } = data;
         const currentList = labelList ? labelList.length : 0;
-        if (user && user.role != 1){
+        if (user && user.role && user.role.index !== 1){
             return <Redirect from="/" to="/" />
         }
         return (

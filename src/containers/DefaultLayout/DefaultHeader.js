@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Badge, UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem,
+import {  UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem,
   Button
 } from 'reactstrap';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
-import { AppAsideToggler, AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
+import { AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
 import logo from '../../assets/img/brand/logo.svg'
 import sygnet from '../../assets/img/brand/sygnet.svg'
 import {appConfig} from "../../configs/app.config"
 
-const propTypes = {
-  children: PropTypes.node,
-};
+// const propTypes = {
+//   children: PropTypes.node,
+// };
 
-const defaultProps = {};
+// const defaultProps = {};
 
 class DefaultHeader extends Component {
   constructor(props){
@@ -45,7 +45,7 @@ class DefaultHeader extends Component {
             <Link to="/dien-thoai" className="nav-link">Điện thoại</Link>
           </NavItem>
           {
-            user && user.role === 1 && 
+            user && user.role && user.role.index === 1 && 
             <React.Fragment>
               <NavItem className="px-3">
                 <NavLink to="/nhan-hieu" className="nav-link">Nhãn hiệu điện thoại</NavLink>

@@ -11,6 +11,7 @@ import { FormattedNumber } from "react-intl";
 
 import { appConfig } from "../../configs/app.config";
 import { getProducts } from "../../actions/phone.action";
+import { getLabelList } from "../../actions/label.action";
 
 class PhonePage extends Component {
     constructor(props) {
@@ -30,6 +31,7 @@ class PhonePage extends Component {
 
     componentDidMount() {
         this.props.getProducts();
+        this.props.getLabel();
     }
 
     toggleDropdownSort = () => {
@@ -54,9 +56,10 @@ class PhonePage extends Component {
         })
     }
 
-    onClickSelectLabel = (label) => {
+    onClickSelectLabel = (labelId, labelName) => {
         const { params } = this.state;
-        params.label = label;
+        params.labelId = labelId;
+        params.labelName = labelName;
         params.skip = 0
         this.setState({
             params,
@@ -82,28 +85,28 @@ class PhonePage extends Component {
     }
 
     onClickPagination = (number, index) => {
-        const {params, indexPagination, limit_products} = this.state;
-        const {phoneTotal} = this.props.data;
+        const { params, indexPagination, limit_products } = this.state;
+        const { phoneTotal } = this.props.data;
         let newIndexPagination = indexPagination;
         params.skip = limit_products * (number - 1);
 
-        if (index === "-" && indexPagination > 0){
+        if (index === "-" && indexPagination > 0) {
             newIndexPagination = indexPagination - 1;
         }
-        else if (index === "+" && params.skip + limit_products < phoneTotal){
+        else if (index === "+" && params.skip + limit_products < phoneTotal) {
             newIndexPagination = indexPagination + 1;
         }
         this.setState({
             params,
             indexPagination: newIndexPagination
-        },() => {
+        }, () => {
             this.props.getProducts(this.state.params);
         })
     }
 
     render() {
-        const { isOpenDropdownLabel, label, params, isOpenDropdownSort, indexPagination, limit_products } = this.state;
-        const { data } = this.props;
+        const { isOpenDropdownLabel, params, isOpenDropdownSort, indexPagination, limit_products } = this.state;
+        const { data, label } = this.props;
         const { phoneList, phoneTotal } = data;
         const currentList = phoneList ? phoneList.length : 0;
         return (
@@ -122,7 +125,7 @@ class PhonePage extends Component {
                                 </DropdownMenu>
                             </Dropdown>
 
-                            <Dropdown isOpen={isOpenDropdownLabel} toggle={this.toggleDropdownLabel}>
+                            {/* <Dropdown isOpen={isOpenDropdownLabel} toggle={this.toggleDropdownLabel}>
                                 <DropdownToggle caret>
                                     {params.label ? params.label : "Tất cả"}
                                 </DropdownToggle>
@@ -132,7 +135,17 @@ class PhonePage extends Component {
                                         <DropdownItem onClick={e => this.onClickSelectLabel(val)} key={idx}>{val}</DropdownItem>)}
                                 </DropdownMenu>
                             </Dropdown>
-
+                             */}
+                            <Dropdown isOpen={isOpenDropdownLabel} toggle={this.toggleDropdownLabel}>
+                                <DropdownToggle caret>
+                                    {params.labelName ? params.labelName : "Tất cả"}
+                                </DropdownToggle>
+                                <DropdownMenu className="">
+                                    <DropdownItem onClick={e => this.onClickSelectLabel()}>Tất cả</DropdownItem>
+                                    {label && label.map((val, idx) =>
+                                        <DropdownItem onClick={e => this.onClickSelectLabel(val._id, val.name)} key={idx}>{val.name}</DropdownItem>)}
+                                </DropdownMenu>
+                            </Dropdown>
                             <InputGroup>
                                 <Input onChange={this.onSearchChange} className="input-search" type="text" id="input1-group2" name="search" placeholder="Nhập tên điện thoại" />
                                 <InputGroupAddon addonType="prepend">
@@ -150,14 +163,14 @@ class PhonePage extends Component {
                                 <img className="image-hover" alt="" height="250" width="auto" src={`${appConfig.apiProductImage}/${val.image ? val.image : 'default-phone.png'}`} ></img>
                             </NavLink>
                             <h6 className="pt-2">{val.name.length > 30 ? val.name.slice(0, 28) + "..." : val.name}</h6>
-                            <span className="text-danger"><FormattedNumber value={val.price}/> đ</span>
+                            <span className="text-danger"><FormattedNumber value={val.price} /> đ</span>
                             <p>{val.commentAmount} bình luận</p>
                         </Col>
                     )}
                 </Row>
 
                 <Row>
-                    {phoneTotal > currentList && 
+                    {phoneTotal > currentList &&
                         <Col className="d-flex">
                             <div className="ml-auto">
                                 <Pagination >
@@ -170,15 +183,15 @@ class PhonePage extends Component {
                                         </PaginationLink>
                                     </PaginationItem>
                                     {
-                                        phoneTotal > limit_products && 
-                                        <PaginationItem active={(params.skip > 0 && params.skip + limit_products < phoneTotal) || (params.skip > 0 && phoneTotal <= limit_products * 2) }>
+                                        phoneTotal > limit_products &&
+                                        <PaginationItem active={(params.skip > 0 && params.skip + limit_products < phoneTotal) || (params.skip > 0 && phoneTotal <= limit_products * 2)}>
                                             <PaginationLink onClick={e => this.onClickPagination(indexPagination + 2)} tag="button">
                                                 {indexPagination + 2}
                                             </PaginationLink>
                                         </PaginationItem>
                                     }
                                     {
-                                        phoneTotal > limit_products * 2 && 
+                                        phoneTotal > limit_products * 2 &&
                                         <PaginationItem active={params.skip + limit_products >= phoneTotal}>
                                             <PaginationLink onClick={e => this.onClickPagination(indexPagination + 3, "+")} tag="button">
                                                 {indexPagination + 3}
@@ -193,7 +206,7 @@ class PhonePage extends Component {
                         </Col>
                     }
                 </Row>
-                
+
             </div>
         );
     }
@@ -201,7 +214,8 @@ class PhonePage extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        data: state.phoneList
+        data: state.phoneList,
+        label: state.labelList.labelList
     }
 }
 
@@ -209,6 +223,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         getProducts: (params) => {
             dispatch(getProducts(params))
+        },
+        getLabel: () => {
+            dispatch(getLabelList())
         }
     }
 }

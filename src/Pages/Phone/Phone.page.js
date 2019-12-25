@@ -1,6 +1,10 @@
 import { connect } from "react-redux";
 import React, { Component } from 'react';
-import { Row, Col, Table, Button, Form, FormGroup, Input } from "reactstrap";
+import {
+    Row, Col, Table, Button, Form, FormGroup, Input,
+    Dropdown, DropdownItem, DropdownMenu, DropdownToggle,
+    Pagination, PaginationItem, PaginationLink
+} from "reactstrap";
 import { toast } from "react-toastify";
 import CommentApi from "../../api/comment.api";
 import { appConfig } from "../../configs/app.config";
@@ -8,9 +12,10 @@ import { getProductById } from "../../actions/phone.action";
 import Comment from "../../components/common/comment";
 import Modal from "../../components/modals/modal.info";
 import Chart from "../../components/common/chart";
+import { getCommentList } from "../../actions/comment.action";
 
 class Phone extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             comment: {
@@ -18,21 +23,21 @@ class Phone extends Component {
                 // score: 0,
                 content: ""
             },
-            listSore: [1,2,3,4,5,6,7,8,9,10],
+            listSore: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             nodeScore: 0,
             isOpenModal: false,
             doughnut: {
                 labels: [
-                  'Số điểm',
+                    'Số điểm',
                 ],
                 datasets: [
-                {
-                    data: [0, 2],
-                    backgroundColor: [
-                        '#FF6384',
-                    ],
-                }],
-                
+                    {
+                        data: [0, 2],
+                        backgroundColor: [
+                            '#FF6384',
+                        ],
+                    }],
+
             },
             options: {
                 title: {
@@ -43,7 +48,15 @@ class Phone extends Component {
                 tooltips: {
                     enabled: false
                 }
-            }
+            },
+            params: {
+                productId: this.props.match.params.id,
+                skip: 0
+            },
+            isOpenDropdownSort: false,
+            isOpenDropdownAnalysis: false,
+            indexPagination: 0,
+            limit_comments: 5
         }
     }
 
@@ -54,13 +67,14 @@ class Phone extends Component {
     }
 
     checkLogin = () => {
-        if(this.props.user.msg) {
+        console.log(this.props.user)
+        if (this.props.user.role.index === 0) {
             return this.props.history.push("/login", this.props.match.url);
         }
     }
 
     onChange = (e) => {
-        const {comment} = this.state;
+        const { comment } = this.state;
         comment.content = e.target.value;
         this.setState({
             comment
@@ -68,23 +82,23 @@ class Phone extends Component {
     }
 
     onSubmitComment = async (e) => {
-        const {comment} = this.state;
+        const { comment } = this.state;
         e.preventDefault();
-        if(this.props.user.msg) {
+        if (this.props.user.msg) {
             return this.props.history.push("/login", this.props.match.url);
         }
-        if(!comment.content.trim()){
+        if (!comment.content.trim()) {
             return toast.error("Bạn phải nhập nhận xét");
         }
         // else if (comment.score === 0){
         //     return toast.error("Bạn phải chọn điểm dánh giá");
         // }
-        else{
+        else {
             let kq = await CommentApi.SentimentAnalysis(comment.content);
-            if (kq){
+            if (kq) {
                 comment.analysis = kq[0]
                 await CommentApi.AddComment(comment);
-                await this.props.getProductById(this.props.match.params.id);
+                await this.props.getCommentByProductId(this.state.params);
                 comment.content = "";
                 // comment.score = 0;
                 this.setState({
@@ -107,79 +121,83 @@ class Phone extends Component {
     }
 
     onClick = (e, val) => {
-        if(this.props.user.msg) {
+        if (this.props.user.msg) {
             return this.props.history.push("/login", this.props.match.url);
         }
-        
-        const {comment} = this.state;
+
+        const { comment } = this.state;
         comment.score = val;
         this.setState({
             comment
         })
     }
 
-    componentDidMount(){
-        this.props.getProductById(this.props.match.params.id);
+    toggleDropdownSort = () => {
+        this.setState({
+            isOpenDropdownSort: !this.state.isOpenDropdownSort
+        })
     }
 
-    showChart = (comments) => {
-        if(comments){
-            let countPositive = 0;
-            let countNegative = 0;
-            let countNeutral = 0;
-            comments.map(val => {
-                if(val.analysis === 'Tích cực'){
-                    countPositive++
-                }
-                else if(val.analysis === 'Tiêu cực'){
-                    countNegative++
-                }
-                else{
-                    countNeutral++
-                }
-            })
-            this.setState({
-                doughnut: {
-                    labels: [
-                      'Tích cực',
-                      'Tiêu cực',
-                      'Bình thường'
-                    ],
-                    datasets: [
-                    {
-                        data: [countPositive, countNegative, countNeutral],
-                        backgroundColor: [
-                            '#28a745',
-                            '#f00',
-                            '#fc3'
-                        ],
-                    }],
-                    
-                },
-                options: {
-                    title: {
-                        display: false,
-                        text: '5.0/10',
-                        position: 'bottom'
-                    },
-                    tooltips: {
-                        enabled: false
-                    }
-                }
-            })
-        }
+    toggleDropdownAnalysis = () => {
+        this.setState({
+            isOpenDropdownAnalysis: !this.state.isOpenDropdownAnalysis
+        })
     }
-    
+
+    onClickSelectSort = (sort) => {
+        const { params } = this.state;
+        params.sort = sort;
+        this.setState({
+            params
+        }, () => this.props.getCommentByProductId(params))
+    }
+
+    onClickSelectAnalysis = (analysis) => {
+        const { params } = this.state;
+        params.analysis = analysis;
+        this.setState({
+            params
+        }, () => this.props.getCommentByProductId(params))
+    }
+
+    onClickPagination = (number, index) => {
+        const { params, indexPagination, limit_comments } = this.state;
+        const { commentTotal } = this.props.commentData;
+        let newIndexPagination = indexPagination;
+        params.skip = limit_comments * (number - 1);
+
+        if (index === "-" && indexPagination > 0){
+            newIndexPagination = indexPagination - 1;
+        }
+        else if (index === "+" && commentTotal > params.skip + limit_comments){
+            newIndexPagination = indexPagination + 1;
+        }
+
+        this.setState({
+            params,
+            indexPagination: newIndexPagination
+        }, () => {
+            this.props.getCommentByProductId(this.state.params);
+        })
+    }
+
+    componentDidMount() {
+        this.props.getProductById(this.props.match.params.id);
+        this.props.getCommentByProductId(this.state.params);
+    }
 
     render() {
-        const { isOpenModal, comment } = this.state;
-        const { phoneInfo} = this.props;
-        const {phone} = phoneInfo;
+        const { isOpenModal, comment, params, isOpenDropdownAnalysis, isOpenDropdownSort, indexPagination, limit_comments } = this.state;
+        const { phoneInfo, commentData } = this.props;
+        const { commentList, commentTotal } = commentData;
+        const { phone } = phoneInfo;
+        let currentList = commentList ? commentList.length : 0;
+        console.log(commentTotal, currentList)
         return (
             <div >
                 {
-                    phone && 
-                    <Modal 
+                    phone &&
+                    <Modal
                         isOpen={isOpenModal}
                         name={phone.product.name}
                         productDetail={phone.productDetail}
@@ -187,17 +205,17 @@ class Phone extends Component {
                     />
                 }
 
-                
-                <h3  className="border-bottom d-flex align-items-center pt-2">{phone ? phone.product.name : ""}</h3>
+
+                <h3 className="border-bottom d-flex align-items-center pt-2">{phone ? phone.product.name : ""}</h3>
                 <Row>
                     <Col xs="12" sm="4">
                         <img alt="" height="250" width="auto" src={phone ? `${appConfig.apiProductImage}/${phone.product.image}` : ""} ></img>
                     </Col>
 
                     <Col xs="12" sm="4">
-                    {/* <Doughnut data={doughnut} options={options} /> */}
+                        {/* <Doughnut data={doughnut} options={options} /> */}
                         {
-                            phone && <Chart dataComments={phone.comments} ></Chart>                        
+                            commentList && <Chart dataComments={commentList} ></Chart>
                         }
                     </Col>
                 </Row>
@@ -232,7 +250,7 @@ class Phone extends Component {
                                         }
                                     </div>
                                 </Label> */}
-                                <Input value={comment.content} onChange={e => this.onChange(e)} onClick={this.checkLogin}  style={{height: "100px", maxHeight: "250px", minHeight: "56px"}} type="textarea" name="text" id="exampleText" />
+                                <Input value={comment.content} onChange={e => this.onChange(e)} onClick={this.checkLogin} style={{ height: "100px", maxHeight: "250px", minHeight: "56px" }} type="textarea" name="text" id="exampleText" />
                                 <Button className="btn-send-comment" outline color="dark">Gửi</Button>
                             </FormGroup>
                         </Form>
@@ -242,64 +260,125 @@ class Phone extends Component {
                 <Row>
                     <Col xs="12" sm="4">
                         <h4>Thông số kỹ thuật</h4>
-                        {phone && phone.productDetail && 
-                        <div>
-                            <Table>
-                                <tbody>
-                                    <tr>
-                                        <td style={{width: "150px"}}>Màn hình</td>
-                                        <td>{phone.productDetail.screen ? phone.productDetail.screen.screenTechnology : ""}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Hệ điều hành</td>
-                                        <td>{phone.productDetail.platform ? phone.productDetail.platform.os : ""}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Camera trước</td>
-                                        <td>{phone.productDetail.selfieCamera ? phone.productDetail.selfieCamera.resolution : ""}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Camera sau</td>
-                                        <td>{phone.productDetail.mainCamera ? phone.productDetail.mainCamera.resolution : ""}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>CPU</td>
-                                        <td>{phone.productDetail.platform ? phone.productDetail.platform.cpu : ""}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>RAM</td>
-                                        <td>{phone.productDetail.memory ? phone.productDetail.memory.ram : ""}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Bộ nhớ trong</td>
-                                        <td>{phone.productDetail.memory ? phone.productDetail.memory.rom : ""}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Thẻ nhớ</td>
-                                        <td>{phone.productDetail.memory ? phone.productDetail.memory.cardSlot : ""}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Thẻ SIM</td>
-                                        <td>{phone.productDetail.comms ? phone.productDetail.comms.sim : ""}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Dung lượng pin</td>
-                                        <td>{phone.productDetail.battery ? phone.productDetail.battery.capacity : ""}</td>
-                                    </tr>
-                                </tbody>
-                                
-                            </Table>
-                            <Button className="mb-2" outline color="primary" size="lg" onClick={this.toggleModalInfo} block>Xem cấu hình chi tiết</Button>
+                        {phone && phone.productDetail &&
+                            <div>
+                                <Table>
+                                    <tbody>
+                                        <tr>
+                                            <td style={{ width: "150px" }}>Màn hình</td>
+                                            <td>{phone.productDetail.screen ? phone.productDetail.screen.screenTechnology : ""}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hệ điều hành</td>
+                                            <td>{phone.productDetail.platform ? phone.productDetail.platform.os : ""}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Camera trước</td>
+                                            <td>{phone.productDetail.selfieCamera ? phone.productDetail.selfieCamera.resolution : ""}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Camera sau</td>
+                                            <td>{phone.productDetail.mainCamera ? phone.productDetail.mainCamera.resolution : ""}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>CPU</td>
+                                            <td>{phone.productDetail.platform ? phone.productDetail.platform.cpu : ""}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>RAM</td>
+                                            <td>{phone.productDetail.memory ? phone.productDetail.memory.ram : ""}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bộ nhớ trong</td>
+                                            <td>{phone.productDetail.memory ? phone.productDetail.memory.rom : ""}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Thẻ nhớ</td>
+                                            <td>{phone.productDetail.memory ? phone.productDetail.memory.cardSlot : ""}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Thẻ SIM</td>
+                                            <td>{phone.productDetail.comms ? phone.productDetail.comms.sim : ""}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dung lượng pin</td>
+                                            <td>{phone.productDetail.battery ? phone.productDetail.battery.capacity : ""}</td>
+                                        </tr>
+                                    </tbody>
+
+                                </Table>
+                                <Button className="mb-2" outline color="primary" size="lg" onClick={this.toggleModalInfo} block>Xem cấu hình chi tiết</Button>
                             </div>
                         }
                     </Col>
 
                     <Col xs="12" sm="8">
-                        <h4>Đánh giá khác</h4>
-                        {phone && phone.comments && phone.comments.map((val, idx) => {
-                           return <Comment key={idx} user={phone.users[idx]} comment={val} sizeScore="large"></Comment>
+                        <div className="d-flex mb-2">
+                            <h4>Đánh giá khác</h4>
+                            <div className="ml-auto d-flex">
+
+                                <Dropdown isOpen={isOpenDropdownSort} toggle={this.toggleDropdownSort}>
+                                    <DropdownToggle caret>
+                                        {params.sort > 0 ? "Cũ nhất" : "Mới nhất"}
+                                    </DropdownToggle>
+                                    <DropdownMenu className="">
+                                        <DropdownItem onClick={e => this.onClickSelectSort(-1)}>Mới nhất</DropdownItem>
+                                        <DropdownItem onClick={e => this.onClickSelectSort(1)}>Cũ nhất</DropdownItem>
+                                    </DropdownMenu>
+                                </Dropdown>
+
+                                <Dropdown isOpen={isOpenDropdownAnalysis} toggle={this.toggleDropdownAnalysis}>
+                                    <DropdownToggle caret>
+                                        {params.analysis ? params.analysis : "Tất cả"}
+                                    </DropdownToggle>
+                                    <DropdownMenu className="">
+                                        <DropdownItem onClick={e => this.onClickSelectAnalysis()}>Tất cả</DropdownItem>
+                                        <DropdownItem onClick={e => this.onClickSelectAnalysis("tích cực")}>Tích cực</DropdownItem>
+                                        <DropdownItem onClick={e => this.onClickSelectAnalysis("tiêu cực")}>Tiêu cực</DropdownItem>
+                                        <DropdownItem onClick={e => this.onClickSelectAnalysis("bình thường")}>Bình thường</DropdownItem>
+                                    </DropdownMenu>
+                                </Dropdown>
+                            </div>
+                        </div>
+                        {commentList && commentList.map((val, idx) => {
+                            return <Comment key={idx} user={val.userId} comment={val} sizeScore="large"></Comment>
                         })}
-                        
+                        <div className="d-flex">
+                            {commentTotal > currentList &&
+
+                                <div className="ml-auto">
+                                    <Pagination >
+                                        <PaginationItem>
+                                            <PaginationLink previous tag="button" />
+                                        </PaginationItem>
+                                        <PaginationItem active={params.skip === 0}>
+                                            <PaginationLink onClick={e => this.onClickPagination(indexPagination + 1, "-")} tag="button">
+                                                {indexPagination + 1}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                        {
+                                            commentTotal > limit_comments &&
+                                            <PaginationItem active={(params.skip > 0 && params.skip + limit_comments < commentTotal) || (params.skip > 0 && commentTotal <= limit_comments * 2)}>
+                                                <PaginationLink onClick={e => this.onClickPagination(indexPagination + 2)} tag="button">
+                                                    {indexPagination + 2}
+                                                </PaginationLink>
+                                            </PaginationItem>
+                                        }
+                                        {
+                                            commentTotal > limit_comments * 2 &&
+                                            <PaginationItem active={params.skip + limit_comments >= commentTotal}>
+                                                <PaginationLink onClick={e => this.onClickPagination(indexPagination + 3, "+")} tag="button">
+                                                    {indexPagination + 3}
+                                                </PaginationLink>
+                                            </PaginationItem>
+                                        }
+                                        <PaginationItem>
+                                            <PaginationLink next tag="button" />
+                                        </PaginationItem>
+                                    </Pagination>
+                                </div>
+                            }
+                        </div>
                     </Col>
                 </Row>
             </div>
@@ -310,7 +389,8 @@ class Phone extends Component {
 const mapStateToProps = (state, ownProps) => {
     return {
         phoneInfo: state.phone,
-        user: state.auth.user
+        user: state.auth.user,
+        commentData: state.comment
     }
 }
 
@@ -318,6 +398,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         getProductById: (id) => {
             dispatch(getProductById(id));
+        },
+        getCommentByProductId: (params) => {
+            dispatch(getCommentList(params))
         }
     }
 }

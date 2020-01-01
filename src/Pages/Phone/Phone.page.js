@@ -155,6 +155,7 @@ class Phone extends Component {
     onClickSelectAnalysis = (analysis) => {
         const { params } = this.state;
         params.analysis = analysis;
+        params.skip = 0;
         this.setState({
             params
         }, () => this.props.getCommentByProductId(params))
@@ -215,7 +216,7 @@ class Phone extends Component {
                     <Col xs="12" sm="4">
                         {/* <Doughnut data={doughnut} options={options} /> */}
                         {
-                            commentList && <Chart dataComments={commentList} ></Chart>
+                            phone && <Chart dataComments={phone.comments} ></Chart>
                         }
                     </Col>
                 </Row>
